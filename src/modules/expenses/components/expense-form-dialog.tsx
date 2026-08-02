@@ -192,7 +192,7 @@ function ExpenseFormDialog({ trigger, expense }: ExpenseFormDialogProps) {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Amount (৳)</FormLabel>
+                  <FormLabel>Amount (دج)</FormLabel>
                   <FormControl>
                     <Input inputMode="decimal" placeholder="0.00" {...field} />
                   </FormControl>

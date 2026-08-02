@@ -68,7 +68,7 @@ function StorefrontSettingsForm({ defaultValues }: StorefrontSettingsFormProps) 
                 <FormItem>
                   <FormLabel>Announcement bar text</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Free delivery inside Dhaka this week" />
+                    <Input {...field} placeholder="Free delivery inside Alger this week" />
                   </FormControl>
                   <FormDescription>Leave empty to hide the bar.</FormDescription>
                   <FormMessage />

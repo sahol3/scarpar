@@ -13,14 +13,12 @@ import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { BD_DISTRICTS, BD_DIVISIONS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 import { t, type Lang } from '@/lib/i18n'
 import { formatMoney } from '@/lib/money'
 import { cn } from '@/lib/utils'
@@ -40,20 +38,17 @@ export interface CheckoutSettings {
   orgSlug: string
   lang: Lang
   codEnabled: boolean
-  manualMfsEnabled: boolean
-  mfsNumbers: { bkash: string; nagad: string }
-  uddoktapayEnabled: boolean
   advanceRequiredSetting: boolean
   advanceAmount: number
   advanceType: string
   freeDeliveryAbove: number
+  bankDetails: string
 }
 
 const checkoutFormSchema = z.object({
   ...contactSchema.shape,
   ...addressSchema.shape,
-  paymentMethod: z.enum(['cod', 'bkash', 'nagad']),
-  advanceMfsProvider: z.enum(['bkash', 'nagad']).optional(),
+  paymentMethod: z.enum(['cod']),
   trxId: z.string().trim().max(64).optional(),
   senderNumber: z.string().trim().max(20).optional(),
   noteCustomer: z.string().trim().max(500).optional(),
@@ -131,15 +126,12 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
       line1: '',
       area: '',
       district: '',
-      paymentMethod: settings.codEnabled ? 'cod' : 'bkash',
-      advanceMfsProvider: undefined,
+      paymentMethod: 'cod',
       trxId: '',
       senderNumber: '',
       noteCustomer: '',
     },
   })
-
-  const paymentMethod = form.watch('paymentMethod')
 
   async function fetchZoneQuote(district: string) {
     setZoneLoading(true)
@@ -203,16 +195,10 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
   async function onSubmit(values: CheckoutFormValues) {
     if (items.length === 0) return
 
-    if ((values.paymentMethod === 'bkash' || values.paymentMethod === 'nagad') && (!values.trxId || !values.senderNumber)) {
-      if (!values.trxId) form.setError('trxId', { message: 'Enter the transaction ID' })
-      if (!values.senderNumber) form.setError('senderNumber', { message: 'Enter the sender number' })
-      return
-    }
-    if (values.paymentMethod === 'cod' && advanceRequired) {
-      if (!values.advanceMfsProvider) form.setError('advanceMfsProvider', { message: 'Choose bKash or Nagad' })
-      if (!values.trxId) form.setError('trxId', { message: 'Enter the transaction ID' })
-      if (!values.senderNumber) form.setError('senderNumber', { message: 'Enter the sender number' })
-      if (!values.advanceMfsProvider || !values.trxId || !values.senderNumber) return
+    if (advanceRequired) {
+      if (!values.trxId) form.setError('trxId', { message: 'Enter the bank transfer reference' })
+      if (!values.senderNumber) form.setError('senderNumber', { message: 'Enter the payer name' })
+      if (!values.trxId || !values.senderNumber) return
     }
 
     const payload: PlaceOrderInput = {
@@ -222,7 +208,6 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
       items: items.map((i) => ({ productId: i.productId, variantId: i.variantId ?? null, qty: i.qty })),
       discountCode: discount ? discountCode.trim() : undefined,
       paymentMethod: values.paymentMethod,
-      advanceMfsProvider: values.advanceMfsProvider,
       trxId: values.trxId || undefined,
       senderNumber: values.senderNumber || undefined,
       noteCustomer: values.noteCustomer || undefined,
@@ -261,7 +246,7 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
             <FormItem>
               <FormLabel>{t('transaction_id', lang)}</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="8N7XXXXXXX" />
+                <Input {...field} placeholder="Transfer reference / receipt no." />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -272,9 +257,9 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
           name="senderNumber"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sender number</FormLabel>
+              <FormLabel>Payer name</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="01XXXXXXXXX" />
+                <Input {...field} placeholder="Name on the bank account" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -377,19 +362,14 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
                     >
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select district" />
+                          <SelectValue placeholder="Select wilaya" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {BD_DIVISIONS.map((division) => (
-                          <SelectGroup key={division}>
-                            <SelectLabel>{division}</SelectLabel>
-                            {BD_DISTRICTS.filter((d) => d.division === division).map((d) => (
-                              <SelectItem key={d.name} value={d.name}>
-                                {d.name}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
+                        {DZ_WILAYA_NAMES.map((name) => (
+                          <SelectItem key={name} value={name}>
+                            {name}
+                          </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -411,74 +391,19 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
                       ? `Pay ${formatMoney(advanceDue)} advance now, rest on delivery`
                       : 'Pay when your order arrives'
                   }
-                  selected={paymentMethod === 'cod'}
+                  selected
                   onSelect={() => form.setValue('paymentMethod', 'cod')}
                 >
-                  {paymentMethod === 'cod' && advanceRequired ? (
+                  {advanceRequired ? (
                     <div className="flex flex-col gap-3">
                       <p className="text-xs text-muted-foreground">
-                        {t('send_money_instructions', lang)}: {formatMoney(advanceDue)} to
-                        {settings.mfsNumbers.bkash ? ` bKash ${settings.mfsNumbers.bkash}` : ''}
-                        {settings.mfsNumbers.bkash && settings.mfsNumbers.nagad ? ' or' : ''}
-                        {settings.mfsNumbers.nagad ? ` Nagad ${settings.mfsNumbers.nagad}` : ''}
+                        {t('send_money_instructions', lang)}: {formatMoney(advanceDue)}
+                        {settings.bankDetails ? ` — ${settings.bankDetails}` : ''}
                       </p>
-                      <FormField
-                        control={form.control}
-                        name="advanceMfsProvider"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Sent via</FormLabel>
-                            <Select value={field.value} onValueChange={field.onChange}>
-                              <FormControl>
-                                <SelectTrigger className="w-full">
-                                  <SelectValue placeholder="bKash or Nagad" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                {settings.mfsNumbers.bkash ? <SelectItem value="bkash">bKash</SelectItem> : null}
-                                {settings.mfsNumbers.nagad ? <SelectItem value="nagad">Nagad</SelectItem> : null}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
                       {trxFields()}
                     </div>
                   ) : null}
                 </PaymentOption>
-              ) : null}
-
-              {settings.manualMfsEnabled && settings.mfsNumbers.bkash ? (
-                <PaymentOption
-                  label="bKash"
-                  description={`Send ${formatMoney(total)} to ${settings.mfsNumbers.bkash}`}
-                  selected={paymentMethod === 'bkash'}
-                  onSelect={() => form.setValue('paymentMethod', 'bkash')}
-                >
-                  {paymentMethod === 'bkash' ? trxFields() : null}
-                </PaymentOption>
-              ) : null}
-
-              {settings.manualMfsEnabled && settings.mfsNumbers.nagad ? (
-                <PaymentOption
-                  label="Nagad"
-                  description={`Send ${formatMoney(total)} to ${settings.mfsNumbers.nagad}`}
-                  selected={paymentMethod === 'nagad'}
-                  onSelect={() => form.setValue('paymentMethod', 'nagad')}
-                >
-                  {paymentMethod === 'nagad' ? trxFields() : null}
-                </PaymentOption>
-              ) : null}
-
-              {settings.uddoktapayEnabled ? (
-                <PaymentOption
-                  label="Online payment (UddoktaPay)"
-                  description="Redirecting unavailable in demo — choose another method"
-                  selected={false}
-                  disabled
-                  onSelect={() => {}}
-                />
               ) : null}
             </div>
           </div>
@@ -550,7 +475,7 @@ export function CheckoutForm({ settings }: { settings: CheckoutSettings }) {
               </span>
             </div>
             {!zoneQuote && !zoneLoading ? (
-              <p className="text-xs text-muted-foreground">Select your district to calculate delivery.</p>
+              <p className="text-xs text-muted-foreground">Select your wilaya to calculate delivery.</p>
             ) : null}
             {zoneQuote?.etaText ? <p className="text-xs text-muted-foreground">{zoneQuote.etaText}</p> : null}
             {zoneQuote?.warning ? (

@@ -48,7 +48,7 @@ export interface CartLine {
   qty: number
 }
 
-type TenderMethod = 'cash' | 'bkash' | 'nagad'
+type TenderMethod = 'cash' | 'bank'
 
 interface PosTerminalProps {
   products: PosProduct[]
@@ -183,7 +183,7 @@ export function PosTerminal({ products, categories }: PosTerminalProps) {
 
     const sale = result.data
     toast.success(`Sale complete — ${sale?.orderNo}`, {
-      description: sale && sale.changeDue > 0 ? `Change due: ৳${(sale.changeDue / 100).toFixed(2)}` : undefined,
+      description: sale && sale.changeDue > 0 ? `Change due: دج${(sale.changeDue / 100).toFixed(2)}` : undefined,
     })
 
     if (sale) {

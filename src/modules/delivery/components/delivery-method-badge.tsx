@@ -4,9 +4,10 @@ import { Badge } from "@/components/ui/badge"
 import type { DeliveryCourier, DeliveryMethod } from "@/types/db"
 
 const COURIER_LABELS: Record<DeliveryCourier, string> = {
-  steadfast: "Steadfast",
-  pathao: "Pathao",
-  redx: "RedX",
+  yalidine: "Yalidine",
+  zr_express: "ZR Express",
+  noest_express: "Noest Express",
+  guepex: "Guepex",
   manual: "Manual",
 }
 

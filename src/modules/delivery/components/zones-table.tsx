@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Switch } from "@/components/ui/switch"
-import { BD_DISTRICTS, BD_DIVISIONS, DHAKA_METRO } from "@/lib/bd"
+import { DZ_WILAYA_NAMES, ALGIERS_METRO } from "@/lib/dz"
 import { formatMoney, fromPaisa, toPaisa } from "@/lib/money"
 import type { DeliveryZone } from "@/types/db"
 import { deleteZoneAction, upsertZoneAction } from "../actions"
@@ -34,7 +34,7 @@ interface ZoneDialogProps {
   trigger: React.ReactNode
 }
 
-/** Create/edit dialog — districts multi-select grouped by division + a district-count summary. */
+/** Create/edit dialog — wilaya multi-select + a wilaya-count summary. */
 function ZoneDialog({ zone, trigger }: ZoneDialogProps) {
   const router = useRouter()
   const [open, setOpen] = React.useState(false)
@@ -64,8 +64,8 @@ function ZoneDialog({ zone, trigger }: ZoneDialogProps) {
     setDistricts((prev) => (checked ? [...prev, districtName] : prev.filter((d) => d !== districtName)))
   }
 
-  function selectOutsideDhaka() {
-    setDistricts(BD_DISTRICTS.filter((d) => !DHAKA_METRO.has(d.name)).map((d) => d.name))
+  function selectOutsideAlgiers() {
+    setDistricts(DZ_WILAYA_NAMES.filter((name) => !ALGIERS_METRO.has(name)))
   }
 
   async function handleSave() {
@@ -74,7 +74,7 @@ function ZoneDialog({ zone, trigger }: ZoneDialogProps) {
       return
     }
     if (districts.length === 0) {
-      toast.error("Select at least one district")
+      toast.error("Select at least one wilaya")
       return
     }
 
@@ -108,7 +108,7 @@ function ZoneDialog({ zone, trigger }: ZoneDialogProps) {
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{zone ? "Edit zone" : "New zone"}</DialogTitle>
-          <DialogDescription>Districts, charge, and COD rules for this delivery zone.</DialogDescription>
+          <DialogDescription>Wilayas, charge, and COD rules for this delivery zone.</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
@@ -118,7 +118,7 @@ function ZoneDialog({ zone, trigger }: ZoneDialogProps) {
               <Input value={name} onChange={(event) => setName(event.target.value)} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label>Charge (৳)</Label>
+              <Label>Charge (دج)</Label>
               <Input type="number" step="0.01" value={charge} onChange={(event) => setCharge(event.target.value)} />
             </div>
           </div>
@@ -144,31 +144,24 @@ function ZoneDialog({ zone, trigger }: ZoneDialogProps) {
           </div>
 
           <div className="flex items-center justify-between">
-            <Label>Districts ({districts.length} selected)</Label>
-            <Button type="button" variant="outline" size="sm" onClick={selectOutsideDhaka}>
-              Select all outside Dhaka
+            <Label>Wilayas ({districts.length} selected)</Label>
+            <Button type="button" variant="outline" size="sm" onClick={selectOutsideAlgiers}>
+              Select all outside Alger
             </Button>
           </div>
 
           <ScrollArea className="h-64 rounded-md border p-3">
-            {BD_DIVISIONS.map((division) => (
-              <div key={division} className="mb-3 last:mb-0">
-                <p className="text-muted-foreground mb-1.5 text-[11px] font-medium tracking-wide uppercase">
-                  {division}
-                </p>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {BD_DISTRICTS.filter((d) => d.division === division).map((d) => (
-                    <label key={d.name} className="flex items-center gap-2 text-[13px]">
-                      <Checkbox
-                        checked={districts.includes(d.name)}
-                        onCheckedChange={(checked) => toggleDistrict(d.name, checked === true)}
-                      />
-                      {d.name}
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
+            <div className="grid grid-cols-2 gap-1.5">
+              {DZ_WILAYA_NAMES.map((name) => (
+                <label key={name} className="flex items-center gap-2 text-[13px]">
+                  <Checkbox
+                    checked={districts.includes(name)}
+                    onCheckedChange={(checked) => toggleDistrict(name, checked === true)}
+                  />
+                  {name}
+                </label>
+              ))}
+            </div>
           </ScrollArea>
         </div>
 
@@ -227,7 +220,7 @@ const columns: ColumnDef<DeliveryZone>[] = [
   { accessorKey: "name", header: "Name" },
   {
     id: "districts",
-    header: "Districts",
+    header: "Wilayas",
     cell: ({ row }) => {
       const districts = row.original.districts
       const preview = districts.slice(0, 3)

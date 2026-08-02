@@ -108,21 +108,20 @@ Flip via the `OrgActiveSwitch` on `/admin/platform` → `toggleOrgActive` action
   every server action using `getAdminClient()` (`src/lib/supabase/admin.ts`) breaks the instant the old
   key is revoked, so this is a "update env, redeploy, confirm, then revoke old key" sequence, not
   "revoke then update."
-- Per-org secrets (courier API keys in `courier_accounts.config jsonb`, UddoktaPay keys in
-  `org_settings` via `payments.uddoktapay.api_key`) live in the database, not env vars — rotating those
-  is an org-admin self-service action through the existing settings UI, not a platform operation.
+- Per-org secrets (courier API keys in `courier_accounts.config jsonb`) live in the database, not env
+  vars — rotating those is an org-admin self-service action through the existing settings UI, not a
+  platform operation. There is no online payment gateway key to rotate in v1 — payments are
+  cash-on-delivery-only (see architecture §7).
 
 ## Incident basics
 
-- **Payment-verify stuck** (a manual MFS payment sits `pending` past a reasonable window): check
-  `payments` table for the row, confirm `verifyPayment()` (`src/modules/orders/actions.ts`) chokepoint
-  wasn't bypassed — it's the *only* code path allowed to flip `status→verified` (binding invariant,
-  `CLAUDE.md`). The UddoktaPay webhook route (`api/webhooks/uddoktapay`) exists but is a
-  log-and-200 stub — it does NOT call the chokepoint yet (Phase E item 20 wires it), so today
-  "the webhook didn't fire" cannot be the cause; manual MFS verify is the only live verification
-  path. Diagnosis today and after item 20 ships: check `payments.provider_ref` against the
-  provider's dashboard, then replay manually via the admin verify UI (same chokepoint, same audit
-  trail) rather than writing a one-off SQL update.
+- **Payment-verify stuck** (a bank-transfer advance payment sits `pending` past a reasonable window):
+  check `payments` table for the row, confirm `verifyPayment()` (`src/modules/orders/actions.ts`)
+  chokepoint wasn't bypassed — it's the *only* code path allowed to flip `status→verified` (binding
+  invariant, `CLAUDE.md`). There is no payment webhook in v1 (COD-only, no gateway) — manual admin
+  verify through the existing UI is the only verification path. Diagnosis: check `payments.provider_ref`
+  (the bank transfer reference the customer entered) against the org's bank statement, then verify via
+  the admin verify UI (same chokepoint, same audit trail) rather than writing a one-off SQL update.
 - **Webhook flood** (courier/payment webhook retries hammering a route): there is no rate limiting in
   `middleware.ts` today (this is exactly `docs/saas-roadmap.md` Phase E item 25's gap) — a flood is
   currently an availability risk, not just noise. Mitigate ad hoc today by adding a per-source IP block

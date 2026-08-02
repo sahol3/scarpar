@@ -10,9 +10,10 @@ import type { PageProps } from '@/lib/types'
 export const dynamic = 'force-dynamic'
 
 const COURIER_LABELS: Record<string, string> = {
-  steadfast: 'Steadfast',
-  pathao: 'Pathao',
-  redx: 'RedX',
+  yalidine: 'Yalidine',
+  zr_express: 'ZR Express',
+  noest_express: 'Noest Express',
+  guepex: 'Guepex',
   manual: 'Manual Courier',
 }
 

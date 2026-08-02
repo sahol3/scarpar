@@ -19,7 +19,7 @@ export function CategoryPills({
   categories,
   activeSlug,
   query,
-  lang = 'en',
+  lang = 'ar',
 }: {
   orgSlug: string
   categories: Pick<Category, 'id' | 'name' | 'slug'>[]
@@ -62,7 +62,7 @@ export function ProductSearchBox({
   orgSlug,
   query,
   category,
-  lang = 'en',
+  lang = 'ar',
 }: {
   orgSlug: string
   query?: string

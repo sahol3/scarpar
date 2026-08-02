@@ -65,7 +65,7 @@ export async function createOrgAction(input: CreateOrgInput): Promise<ActionResu
         slug,
         vertical,
         phone,
-        currency: 'BDT',
+        currency: 'DZD',
         enabled_modules: VERTICAL_PRESETS[vertical].modules,
       })
       .select('*')

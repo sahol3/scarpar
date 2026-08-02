@@ -31,8 +31,10 @@ Read docs/architecture.md and docs/design-system.md first. Deviations are bugs.
   (src/lib/audit.ts) and `revalidatePath(...)` after write.
 
 ## Money & formatting
-- DB bigint paisa → TS `number` paisa. `formatMoney(paisa)` → "৳1,234.50" (src/lib/money.ts), `toPaisa()`,
-  `moneyToWords(paisa)` (en). Money table cells: right-aligned + `tabular-nums`.
+- DB bigint paisa (smallest-unit convention; column/function names kept for stability, currency is now DZD)
+  → TS `number`. `formatMoney(amount)` → "دج 1,234.50" (src/lib/money.ts), `toPaisa()`,
+  `moneyToWords(amount)` (French word-numbering — used for receipt amount-in-words). Money table cells:
+  right-aligned + `tabular-nums`.
 - Dates: date-fns, format 'd MMM yyyy' / 'd MMM, h:mm a'. Timezone = org.timezone display only.
 
 ## UI
@@ -52,7 +54,8 @@ Read docs/architecture.md and docs/design-system.md first. Deviations are bugs.
 ## Misc
 - No new npm dependencies. No `any` unless unavoidable (prefer precise types from src/types/db/*).
 - Doc numbers via `next_doc_number` RPC only. IDs in URLs are uuids. Files kebab-case, components PascalCase.
-- Bengali: UI copy via `t(key)` optional util for storefront strings; admin stays English. `.text-bengali`
-  class for bn text rendering.
+- i18n: storefront copy via `t(key, lang)` in `src/lib/i18n.ts` (`Lang = 'ar' | 'fr'`, Arabic is RTL);
+  admin stays English. `.font-arabic` class for Arabic text rendering; storefront root sets `dir="rtl"`
+  when `localization.language === 'ar'`.
 - Notifications: fire `notify(orgId, event, payload)` per architecture §10 from relevant actions.
 - Print pages: bare layout, load src/styles/print.css, `<PrintButton/>` client comp calling window.print().

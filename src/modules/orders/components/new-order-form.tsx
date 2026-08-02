@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { BD_DISTRICTS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 import { formatMoney, fromPaisa, toPaisa } from '@/lib/money'
 import { createManualOrderAction } from '@/modules/orders/actions'
 import type { CreateManualOrderInput } from '@/modules/orders/schemas'
@@ -21,10 +21,6 @@ import { ItemBuilder, type OrderLineItem } from './item-builder'
 
 const PAYMENT_METHOD_OPTIONS = [
   { value: 'cod', label: 'Cash on delivery' },
-  { value: 'bkash', label: 'bKash' },
-  { value: 'nagad', label: 'Nagad' },
-  { value: 'uddoktapay', label: 'UddoktaPay' },
-  { value: 'sslcommerz', label: 'SSLCommerz' },
   { value: 'bank', label: 'Bank' },
   { value: 'cash', label: 'Cash' },
 ] as const
@@ -86,7 +82,7 @@ function NewOrderForm({ deliveryZones, deliveryEnabled, defaultAdvance }: NewOrd
       return
     }
     if (!line1.trim() || !district) {
-      toast.error('Address line and district are required')
+      toast.error('Address line and wilaya are required')
       return
     }
     if (items.length === 0) {
@@ -166,15 +162,15 @@ function NewOrderForm({ deliveryZones, deliveryEnabled, defaultAdvance }: NewOrd
                 <Input id="address-area" value={area} onChange={(e) => setArea(e.target.value)} />
               </div>
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="address-district">District</Label>
+                <Label htmlFor="address-district">Wilaya</Label>
                 <Select value={district} onValueChange={setDistrict}>
                   <SelectTrigger id="address-district" className="w-full">
-                    <SelectValue placeholder="Select district" />
+                    <SelectValue placeholder="Select wilaya" />
                   </SelectTrigger>
                   <SelectContent>
-                    {BD_DISTRICTS.map((d) => (
-                      <SelectItem key={d.name} value={d.name}>
-                        {d.name}
+                    {DZ_WILAYA_NAMES.map((name) => (
+                      <SelectItem key={name} value={name}>
+                        {name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -218,7 +214,7 @@ function NewOrderForm({ deliveryZones, deliveryEnabled, defaultAdvance }: NewOrd
                 </Select>
               ) : (
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="manual-delivery-charge">Delivery charge (taka)</Label>
+                  <Label htmlFor="manual-delivery-charge">Delivery charge (DZD)</Label>
                   <Input
                     id="manual-delivery-charge"
                     inputMode="decimal"
@@ -261,7 +257,7 @@ function NewOrderForm({ deliveryZones, deliveryEnabled, defaultAdvance }: NewOrd
                 </Select>
               </div>
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="advance-amount">Advance amount (taka)</Label>
+                <Label htmlFor="advance-amount">Advance amount (DZD)</Label>
                 <Input
                   id="advance-amount"
                   inputMode="decimal"

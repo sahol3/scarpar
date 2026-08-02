@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 
 import { getOrgSettings, settingStr } from '@/lib/settings'
 import { getAnonClient } from '@/lib/supabase/anon'
+import { langDir, type Lang } from '@/lib/i18n'
 import type { LayoutProps } from '@/lib/types'
 import type { Menu } from '@/types/db'
 
@@ -52,11 +53,15 @@ export default async function StoreLayout({ params, children }: LayoutProps<{ or
   const announcement = settingStr(settings, 'storefront.announcement')
   const whatsappNumber = settingStr(settings, 'storefront.whatsapp_number')
   const primaryColor = settingStr(settings, 'storefront.primary_color')
+  const lang = settingStr(settings, 'localization.language') as Lang
+  const dir = langDir(lang)
 
   return (
     <CartProvider orgSlug={org.slug}>
       <div
-        className="flex min-h-dvh flex-col bg-background text-foreground"
+        dir={dir}
+        lang={lang}
+        className={`flex min-h-dvh flex-col bg-background text-foreground ${lang === 'ar' ? 'font-arabic' : ''}`}
         style={primaryColor ? ({ '--primary': primaryColor } as CSSProperties) : undefined}
       >
         <AnnouncementBar text={announcement} />

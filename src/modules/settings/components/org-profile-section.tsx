@@ -35,8 +35,7 @@ import { updateOrgProfileAction } from '@/modules/settings/actions'
 import { orgProfileSchema, type OrgProfileInput } from '@/modules/settings/schemas'
 
 const TIMEZONE_OPTIONS = [
-  { value: 'Asia/Dhaka', label: 'Asia/Dhaka (UTC+6)' },
-  { value: 'Asia/Kolkata', label: 'Asia/Kolkata (UTC+5:30)' },
+  { value: 'Africa/Algiers', label: 'Africa/Algiers (UTC+1)' },
   { value: 'UTC', label: 'UTC' },
 ]
 

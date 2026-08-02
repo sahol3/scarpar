@@ -14,8 +14,9 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { fromPaisa, toPaisa } from "@/lib/money"
+import { DZ_WILAYA_NAMES } from "@/lib/dz"
 import type { DeliveryCourier, DeliveryZone, Order, Rider } from "@/types/db"
-import { createDeliveryAction } from "../actions"
+import { createDeliveryAction, getCourierWilayaRateAction } from "../actions"
 import type { CreateDeliveryInput } from "../schemas"
 
 const METHODS = [
@@ -26,16 +27,17 @@ const METHODS = [
 
 const COURIERS: { value: DeliveryCourier; label: string }[] = [
   { value: "manual", label: "Manual" },
-  { value: "steadfast", label: "Steadfast" },
-  { value: "pathao", label: "Pathao" },
-  { value: "redx", label: "RedX" },
+  { value: "yalidine", label: "Yalidine" },
+  { value: "zr_express", label: "ZR Express" },
+  { value: "noest_express", label: "Noest Express" },
+  { value: "guepex", label: "Guepex" },
 ]
 
 const formSchema = z.object({
   method: z.enum(["rider", "courier", "pickup"]),
   zone_id: z.string(),
   rider_id: z.string(),
-  courier: z.enum(["steadfast", "pathao", "redx", "manual"]),
+  courier: z.enum(["yalidine", "zr_express", "noest_express", "guepex", "manual"]),
   manual_tracking_code: z.string(),
   recipient_name: z.string().trim().min(1, "Recipient name is required"),
   recipient_phone: z.string().trim().min(6, "Recipient phone is required"),
@@ -45,6 +47,7 @@ const formSchema = z.object({
   postcode: z.string(),
   cod_amount: z.string().min(1, "Required"),
   fee: z.string().min(1, "Required"),
+  delivery_type: z.enum(["home", "stopdesk"]),
   otp_enabled: z.boolean(),
 })
 
@@ -83,12 +86,31 @@ function NewDeliveryForm({ order, zones, riders, defaultZoneId }: NewDeliveryFor
       postcode: orderAddress.postcode ?? "",
       cod_amount: String(fromPaisa(Math.max(0, order.total - order.advance_paid))),
       fee: String(fromPaisa(defaultZone?.charge ?? 0)),
+      delivery_type: "home",
       otp_enabled: false,
     },
   })
 
   const method = form.watch("method")
   const courier = form.watch("courier")
+  const district = form.watch("district")
+  const deliveryType = form.watch("delivery_type")
+
+  // Auto-suggest the delivery fee from the org's courier_wilaya_rates grid
+  // whenever a real (non-manual) courier + wilaya + delivery type is picked.
+  React.useEffect(() => {
+    if (method !== "courier" || courier === "manual" || !district) return
+    let cancelled = false
+    void getCourierWilayaRateAction({ courier, wilayaName: district, deliveryType }).then((result) => {
+      if (cancelled) return
+      if (result.ok && result.data) {
+        form.setValue("fee", String(fromPaisa(result.data.price)))
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [method, courier, district, deliveryType, form])
 
   function handleZoneChange(zoneId: string) {
     const zone = zones.find((z) => z.id === zoneId)
@@ -221,7 +243,29 @@ function NewDeliveryForm({ order, zones, riders, defaultZoneId }: NewDeliveryFor
                       </FormItem>
                     )}
                   />
-                ) : null}
+                ) : (
+                  <FormField
+                    control={form.control}
+                    name="delivery_type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Delivery type</FormLabel>
+                        <Select value={field.value} onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select delivery type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="home">Home delivery</SelectItem>
+                            <SelectItem value="stopdesk">Stopdesk (bureau pickup)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </>
             ) : null}
 
@@ -317,10 +361,21 @@ function NewDeliveryForm({ order, zones, riders, defaultZoneId }: NewDeliveryFor
               name="district"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>District</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
+                  <FormLabel>Wilaya</FormLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select wilaya" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {DZ_WILAYA_NAMES.map((name) => (
+                        <SelectItem key={name} value={name}>
+                          {name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -348,7 +403,7 @@ function NewDeliveryForm({ order, zones, riders, defaultZoneId }: NewDeliveryFor
               name="cod_amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>COD amount (৳)</FormLabel>
+                  <FormLabel>COD amount (دج)</FormLabel>
                   <FormControl>
                     <Input type="number" step="0.01" {...field} />
                   </FormControl>
@@ -361,7 +416,7 @@ function NewDeliveryForm({ order, zones, riders, defaultZoneId }: NewDeliveryFor
               name="fee"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Delivery fee (৳)</FormLabel>
+                  <FormLabel>Delivery fee (دج)</FormLabel>
                   <FormControl>
                     <Input type="number" step="0.01" {...field} />
                   </FormControl>

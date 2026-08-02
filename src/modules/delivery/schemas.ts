@@ -4,7 +4,7 @@
 import { z } from 'zod'
 
 export const deliveryMethodSchema = z.enum(['rider', 'courier', 'pickup'])
-export const deliveryCourierSchema = z.enum(['steadfast', 'pathao', 'redx', 'manual'])
+export const deliveryCourierSchema = z.enum(['yalidine', 'zr_express', 'noest_express', 'guepex', 'manual'])
 
 export const deliveryAddressSchema = z.object({
   line1: z.string().trim().min(1, 'Address line is required').max(300),
@@ -81,6 +81,27 @@ export const zoneSchema = z.object({
   is_active: z.boolean().default(true),
 })
 export type ZoneInput = z.infer<typeof zoneSchema>
+
+export const deliveryPricingTypeSchema = z.enum(['home', 'stopdesk'])
+
+/** One rate row (courier x wilaya x delivery type) — bulk-upserted from the pricing grid. */
+export const courierWilayaRateSchema = z.object({
+  courier: deliveryCourierSchema,
+  wilaya_code: z.string().trim().min(1),
+  wilaya_name: z.string().trim().min(1),
+  delivery_type: deliveryPricingTypeSchema,
+  price: z.number().int().min(0),
+  return_price: z.number().int().min(0),
+  is_active: z.boolean().default(true),
+})
+export type CourierWilayaRateInput = z.infer<typeof courierWilayaRateSchema>
+
+export const bulkUpsertCourierWilayaRatesSchema = z.object({
+  courier: deliveryCourierSchema,
+  rates: z.array(courierWilayaRateSchema).min(1),
+})
+export type BulkUpsertCourierWilayaRatesInput = z.infer<typeof bulkUpsertCourierWilayaRatesSchema>
+
 
 export const riderSchema = z.object({
   id: z.string().uuid().optional(),

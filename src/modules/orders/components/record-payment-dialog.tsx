@@ -30,17 +30,13 @@ const KIND_OPTIONS = [
 
 const METHOD_OPTIONS = [
   { value: 'cod', label: 'COD' },
-  { value: 'bkash', label: 'bKash' },
-  { value: 'nagad', label: 'Nagad' },
-  { value: 'uddoktapay', label: 'UddoktaPay' },
-  { value: 'sslcommerz', label: 'SSLCommerz' },
   { value: 'bank', label: 'Bank' },
   { value: 'cash', label: 'Cash' },
 ]
 
 const DEFAULT_VALUES = {
   kind: 'advance' as const,
-  method: 'bkash' as const,
+  method: 'bank' as const,
   amount: '',
   provider_ref: '',
   sender_number: '',
@@ -138,7 +134,7 @@ function RecordPaymentDialog({ orderId }: RecordPaymentDialogProps) {
               name="amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Amount (taka)</FormLabel>
+                  <FormLabel>Amount (DZD)</FormLabel>
                   <FormControl>
                     <Input inputMode="decimal" placeholder="0.00" {...field} />
                   </FormControl>

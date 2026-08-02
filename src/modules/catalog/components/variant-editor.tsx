@@ -141,7 +141,7 @@ function VariantEditor({ value, onChange }: VariantEditorProps) {
                   />
                 </div>
                 <div className="col-span-3 flex flex-col gap-1">
-                  <Label>Price (৳)</Label>
+                  <Label>Price (دج)</Label>
                   <Input
                     value={row.price}
                     onChange={(e) => updateRow(row.key, { price: e.target.value })}
@@ -149,7 +149,7 @@ function VariantEditor({ value, onChange }: VariantEditorProps) {
                   />
                 </div>
                 <div className="col-span-3 flex flex-col gap-1">
-                  <Label>Compare-at (৳)</Label>
+                  <Label>Compare-at (دج)</Label>
                   <Input
                     value={row.compareAtPrice}
                     onChange={(e) => updateRow(row.key, { compareAtPrice: e.target.value })}

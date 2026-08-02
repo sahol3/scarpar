@@ -4,7 +4,7 @@ import { CheckCircle2 } from 'lucide-react'
 
 import { t, type Lang } from '@/lib/i18n'
 import { formatMoney } from '@/lib/money'
-import { getOrgSettings, getSetting, settingStr } from '@/lib/settings'
+import { getOrgSettings, settingStr } from '@/lib/settings'
 import { getAdminClient } from '@/lib/supabase/admin'
 import type { PageProps } from '@/lib/types'
 import type { Order, OrderItem, Payment } from '@/types/db'
@@ -40,10 +40,7 @@ export default async function OrderConfirmationPage({ params }: PageProps<{ org:
 
   const settings = await getOrgSettings(org.id)
   const lang = settingStr(settings, 'localization.language') as Lang
-  const mfsNumbers = getSetting<{ bkash: string; nagad: string }>(settings, 'payments.manual_mfs.numbers') ?? {
-    bkash: '',
-    nagad: '',
-  }
+  const bankDetails = settingStr(settings, 'payments.bank_details')
 
   // orders carries no public RLS policy at all (architecture §3/§7: order placement is a
   // service-role server action) — the admin client is required, scoped to this org + order_no.
@@ -135,10 +132,9 @@ export default async function OrderConfirmationPage({ params }: PageProps<{ org:
             {pendingPayment.kind === 'advance' ? t('advance_payable', lang) : 'Payment'} pending verification
           </p>
           <p className="text-amber-800 dark:text-amber-300">
-            {formatMoney(pendingPayment.amount)} via {pendingPayment.method === 'bkash' ? 'bKash' : 'Nagad'}
-            {pendingPayment.method === 'bkash' && mfsNumbers.bkash ? ` (${mfsNumbers.bkash})` : ''}
-            {pendingPayment.method === 'nagad' && mfsNumbers.nagad ? ` (${mfsNumbers.nagad})` : ''}
-            {pendingPayment.provider_ref ? ` — TrxID ${pendingPayment.provider_ref}` : ''}
+            {formatMoney(pendingPayment.amount)} via bank transfer
+            {bankDetails ? ` (${bankDetails})` : ''}
+            {pendingPayment.provider_ref ? ` — Ref ${pendingPayment.provider_ref}` : ''}
           </p>
         </div>
       ) : null}

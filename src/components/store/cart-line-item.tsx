@@ -9,7 +9,7 @@ import type { CartItem } from './cart-context'
 import { useCart } from './cart-context'
 import { QtyStepper } from './qty-stepper'
 
-export function CartLineItem({ item, lang = 'en' }: { item: CartItem; lang?: Lang }) {
+export function CartLineItem({ item, lang = 'ar' }: { item: CartItem; lang?: Lang }) {
   const { setQty, remove } = useCart()
 
   return (

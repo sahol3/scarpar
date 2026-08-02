@@ -10,7 +10,7 @@ import { notify } from '@/lib/notify'
 import { DELIVERY_STATUS_FLOW, type DeliveryStatus } from '@/lib/status'
 import { getAdapter, ConfigRequiredError } from '@/lib/couriers'
 import type { ActionResult } from '@/lib/types'
-import type { Delivery } from '@/types/db'
+import type { CourierWilayaRate, Delivery, DeliveryCourier, DeliveryPricingType } from '@/types/db'
 import {
   createDeliverySchema,
   assignRiderSchema,
@@ -22,6 +22,7 @@ import {
   zoneSchema,
   riderSchema,
   settleCodSchema,
+  bulkUpsertCourierWilayaRatesSchema,
   type CreateDeliveryInput,
   type AssignRiderInput,
   type MarkDeliveredInput,
@@ -30,6 +31,7 @@ import {
   type ZoneInput,
   type RiderInput,
   type SettleCodInput,
+  type BulkUpsertCourierWilayaRatesInput,
 } from './schemas'
 
 type ServerSupabase = Awaited<ReturnType<typeof getServerClient>>
@@ -749,5 +751,99 @@ export async function settleCodAction(input: SettleCodInput): Promise<ActionResu
     unstable_rethrow(err)
     console.error('[settleCodAction]', err)
     return { ok: false, error: 'Something went wrong settling COD' }
+  }
+}
+
+// ===========================================================================
+// Courier x wilaya pricing (docs/architecture.md §8 — Algerian courier
+// pricing is flat per wilaya + delivery type, not zone/distance-based).
+// ===========================================================================
+
+export async function listCourierWilayaRatesAction(
+  courier: DeliveryCourier,
+): Promise<ActionResult<CourierWilayaRate[]>> {
+  try {
+    const ctx = await requireOrg()
+    const supabase = await getServerClient()
+
+    const { data, error } = await supabase
+      .from('courier_wilaya_rates')
+      .select('*')
+      .eq('org_id', ctx.org.id)
+      .eq('courier', courier)
+      .order('wilaya_code')
+
+    if (error) return { ok: false, error: error.message }
+    return { ok: true, data: (data ?? []) as CourierWilayaRate[] }
+  } catch (err) {
+    unstable_rethrow(err)
+    console.error('[listCourierWilayaRatesAction]', err)
+    return { ok: false, error: 'Something went wrong loading courier rates' }
+  }
+}
+
+/** Bulk-save the pricing grid for one courier — replaces all its rows in one pass. */
+export async function bulkUpsertCourierWilayaRatesAction(
+  input: BulkUpsertCourierWilayaRatesInput,
+): Promise<ActionResult> {
+  try {
+    const ctx = await requireOrg()
+    requireRole(ctx, 'manager')
+
+    const parsed = bulkUpsertCourierWilayaRatesSchema.safeParse(input)
+    if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? 'Invalid input' }
+
+    const supabase = await getServerClient()
+    const rows = parsed.data.rates.map((rate) => ({
+      ...rate,
+      org_id: ctx.org.id,
+      updated_at: new Date().toISOString(),
+    }))
+
+    const { error } = await supabase
+      .from('courier_wilaya_rates')
+      .upsert(rows, { onConflict: 'org_id,courier,wilaya_code,delivery_type' })
+
+    if (error) return { ok: false, error: error.message }
+
+    audit(ctx, 'courier_wilaya_rates.bulk_upsert', 'courier_wilaya_rates', parsed.data.courier, undefined, {
+      courier: parsed.data.courier,
+      count: rows.length,
+    })
+    revalidatePath('/admin/delivery-pricing')
+    return { ok: true }
+  } catch (err) {
+    unstable_rethrow(err)
+    console.error('[bulkUpsertCourierWilayaRatesAction]', err)
+    return { ok: false, error: 'Something went wrong saving the pricing grid' }
+  }
+}
+
+/** Auto-suggest a fee for the new-delivery form — courier + recipient wilaya + delivery type. */
+export async function getCourierWilayaRateAction(input: {
+  courier: DeliveryCourier
+  wilayaName: string
+  deliveryType: DeliveryPricingType
+}): Promise<ActionResult<{ price: number; return_price: number } | null>> {
+  try {
+    const ctx = await requireOrg()
+    const supabase = await getServerClient()
+
+    const { data, error } = await supabase
+      .from('courier_wilaya_rates')
+      .select('price, return_price')
+      .eq('org_id', ctx.org.id)
+      .eq('courier', input.courier)
+      .eq('wilaya_name', input.wilayaName)
+      .eq('delivery_type', input.deliveryType)
+      .eq('is_active', true)
+      .maybeSingle()
+
+    if (error) return { ok: false, error: error.message }
+    return { ok: true, data: data ? { price: data.price as number, return_price: data.return_price as number } : null }
+  } catch (err) {
+    unstable_rethrow(err)
+    console.error('[getCourierWilayaRateAction]', err)
+    return { ok: false, error: 'Something went wrong looking up the courier rate' }
   }
 }

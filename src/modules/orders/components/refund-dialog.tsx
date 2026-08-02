@@ -24,10 +24,6 @@ import { RefundReturnSchema, type RefundReturnInput } from '@/modules/orders/sch
 
 const METHOD_OPTIONS = [
   { value: 'cod', label: 'Cash' },
-  { value: 'bkash', label: 'bKash' },
-  { value: 'nagad', label: 'Nagad' },
-  { value: 'uddoktapay', label: 'UddoktaPay' },
-  { value: 'sslcommerz', label: 'SSLCommerz' },
   { value: 'bank', label: 'Bank' },
   { value: 'cash', label: 'Cash' },
 ]
@@ -51,7 +47,7 @@ function RefundDialog({ returnId }: RefundDialogProps) {
 
   const form = useForm<RefundReturnInput>({
     resolver: zodResolver(RefundReturnSchema),
-    defaultValues: { returnId, refund_amount: '', method: 'bkash', resolution: 'refund', note: '' },
+    defaultValues: { returnId, refund_amount: '', method: 'bank', resolution: 'refund', note: '' },
   })
 
   async function onSubmit(values: RefundReturnInput) {
@@ -81,7 +77,7 @@ function RefundDialog({ returnId }: RefundDialogProps) {
               name="refund_amount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Refund amount (taka)</FormLabel>
+                  <FormLabel>Refund amount (DZD)</FormLabel>
                   <FormControl>
                     <Input inputMode="decimal" placeholder="0.00" {...field} />
                   </FormControl>

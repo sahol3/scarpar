@@ -39,7 +39,7 @@
   margin: 0 auto;
   background: #fff;
   color: #000;
-  font-family: 'Inter', 'Noto Sans Bengali', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Inter', 'Noto Naskh Arabic', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
   /* Screen-preview-only page-edge hint — a border, not a shadow, to match the admin
      system's "borders over shadows" rule even here. Gone entirely under @media print. */
   border: 1px solid #e4e4e7;
@@ -56,7 +56,7 @@
 }
 
 /* Tracking / consignment codes benefit from unambiguous glyph shapes (0/O, 1/l/I) —
-   scoped narrowly so it never touches Bengali copy elsewhere on the sheet. */
+   scoped narrowly so it never touches Arabic copy elsewhere on the sheet. */
 .mono-code {
   font-family: 'Courier New', ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
@@ -197,7 +197,7 @@
    2. 80mm thermal receipt — .print-thermal (72mm printable width; continuous
       roll, monochrome). Numeric columns use tabular-nums for alignment instead
       of forcing the whole receipt into a monospace face, which would break
-      Bengali glyph shaping; codes that DO want monospace use .mono-code.
+      Arabic glyph shaping; codes that DO want monospace use .mono-code.
    ============================================================================ */
 .print-thermal {
   page: thermal-page;

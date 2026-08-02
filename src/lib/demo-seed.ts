@@ -5,7 +5,7 @@
 // a 'use server' action).
 import type { SupabaseClient } from '@supabase/supabase-js'
 
-import { BD_DISTRICTS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 import { randomKey, slugify } from '@/lib/utils'
 import type { CmsBlock, FaqBlock, HeroBlock, Org, Vertical } from '@/types/db'
 
@@ -14,8 +14,8 @@ import type { CmsBlock, FaqBlock, HeroBlock, Org, Vertical } from '@/types/db'
 // ---------------------------------------------------------------------------
 
 const FAQ_ITEMS = [
-  { q: 'What payment methods do you accept?', a: 'We accept cash on delivery, bKash, and Nagad.' },
-  { q: 'Do you deliver outside Dhaka?', a: 'Yes — we deliver nationwide across all 64 districts.' },
+  { q: 'What payment methods do you accept?', a: 'We accept cash on delivery (COD) nationwide.' },
+  { q: 'Do you deliver outside Alger?', a: 'Yes — we deliver nationwide across all 58 wilayas.' },
   { q: 'How can I get in touch?', a: 'Use the contact details in the footer, or message us on WhatsApp.' },
 ]
 
@@ -24,7 +24,7 @@ function makeHeroBlock(org: Org): HeroBlock {
     _key: randomKey(8),
     _type: 'hero',
     heading: org.name,
-    subheading: 'Quality you can trust, delivered across Bangladesh.',
+    subheading: 'Quality you can trust, delivered across Algeria.',
     ctaLabel: 'Get started',
     ctaHref: '#',
   }
@@ -150,22 +150,22 @@ async function seedEcommerce(admin: SupabaseClient, org: Org): Promise<void> {
   )
   if (productError) throw new Error(productError.message)
 
-  const outsideDhaka = BD_DISTRICTS.map((d) => d.name).filter((name) => name !== 'Dhaka')
+  const outsideAlgiers = DZ_WILAYA_NAMES.filter((name) => name !== 'Alger')
 
   const { error: zoneError } = await admin.from('delivery_zones').insert([
     {
       org_id: org.id,
-      name: 'Inside Dhaka',
-      districts: ['Dhaka'],
-      charge: 6000,
+      name: 'Inside Alger',
+      districts: ['Alger'],
+      charge: 40000,
       cod_available: true,
       position: 0,
     },
     {
       org_id: org.id,
-      name: 'Outside Dhaka',
-      districts: outsideDhaka,
-      charge: 12000,
+      name: 'Outside Alger',
+      districts: outsideAlgiers,
+      charge: 80000,
       cod_available: true,
       position: 1,
     },

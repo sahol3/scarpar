@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BD_DISTRICTS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 import { fromPaisa } from '@/lib/money'
 
 import { updateListing } from '../actions'
@@ -23,6 +23,8 @@ import {
   type ListingFormValues,
   type ListingMedia,
 } from '../schemas'
+
+const DISTRICT_OPTIONS = [...DZ_WILAYA_NAMES].sort((a, b) => a.localeCompare(b))
 import { FeaturesInput } from './features-input'
 import { MediaGallery } from './media-gallery'
 
@@ -97,7 +99,7 @@ function ListingDetailForm({ listing }: ListingDetailFormProps) {
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price (৳)</FormLabel>
+                    <FormLabel>Price (دج)</FormLabel>
                     <FormControl>
                       <Input inputMode="decimal" {...field} />
                     </FormControl>
@@ -228,17 +230,17 @@ function ListingDetailForm({ listing }: ListingDetailFormProps) {
                 name="address.district"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>District</FormLabel>
+                    <FormLabel>Wilaya</FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select district" />
+                          <SelectValue placeholder="Select wilaya" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {BD_DISTRICTS.map((district) => (
-                          <SelectItem key={district.name} value={district.name}>
-                            {district.name}
+                        {DISTRICT_OPTIONS.map((district) => (
+                          <SelectItem key={district} value={district}>
+                            {district}
                           </SelectItem>
                         ))}
                       </SelectContent>
