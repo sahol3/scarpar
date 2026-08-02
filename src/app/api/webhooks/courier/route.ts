@@ -1,12 +1,13 @@
 // Generic courier status webhook (docs/architecture.md §1/§8 route map —
-// "stubs, signature-verify pattern"). Steadfast/Pathao each have their own
-// webhook auth scheme (shared secret / signature header) that isn't specified
-// in docs/architecture.md §8 yet, so this stub intentionally does NOT trust
-// the payload enough to mutate `deliveries.status` — it only appends a
-// delivery_events row (an audit trail entry), the same low-risk shape the
-// admin-typed manual courier flow already produces. Wiring real per-courier
-// signature verification + a status-transition action (through
-// DELIVERY_STATUS_FLOW, src/lib/status.ts) is a follow-up.
+// "stubs, signature-verify pattern"). Each DZ courier (Yalidine/ZR Express/
+// Noest Express/Guepex) has its own webhook auth scheme (shared secret /
+// signature header) that isn't specified in docs/architecture.md §8 yet, so
+// this stub intentionally does NOT trust the payload enough to mutate
+// `deliveries.status` — it only appends a delivery_events row (an audit trail
+// entry), the same low-risk shape the admin-typed manual courier flow already
+// produces. Wiring real per-courier signature verification + a
+// status-transition action (through DELIVERY_STATUS_FLOW, src/lib/status.ts)
+// is a follow-up.
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 

@@ -145,7 +145,7 @@ function SettingField({ def, value, disabled, onChange, onValidityChange }: Sett
       <div className="flex items-center justify-between gap-6 border-b py-3 last:border-b-0">
         <FieldLabel def={def} />
         <div className="flex w-56 items-center gap-1.5">
-          {money ? <span className="text-sm text-muted-foreground">৳</span> : null}
+          {money ? <span className="text-sm text-muted-foreground">دج</span> : null}
           <Input
             id={def.key}
             type="number"

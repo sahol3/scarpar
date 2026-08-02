@@ -404,7 +404,7 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
                   name="price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Price (৳)</FormLabel>
+                      <FormLabel>Price (دج)</FormLabel>
                       <FormControl>
                         <Input inputMode="decimal" {...field} />
                       </FormControl>
@@ -417,7 +417,7 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
                   name="compare_at_price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Compare-at price (৳)</FormLabel>
+                      <FormLabel>Compare-at price (دج)</FormLabel>
                       <FormControl>
                         <Input inputMode="decimal" {...field} />
                       </FormControl>
@@ -430,7 +430,7 @@ function ProductForm({ mode, product, variants, images, categories }: ProductFor
                   name="cost_price"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Cost price (৳)</FormLabel>
+                      <FormLabel>Cost price (دج)</FormLabel>
                       <FormControl>
                         <Input inputMode="decimal" {...field} />
                       </FormControl>

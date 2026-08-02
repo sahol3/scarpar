@@ -28,21 +28,23 @@ export interface FraudProvider {
 }
 
 /**
- * FraudBD stub — no publicly documented request/response shape to build
- * against yet, so this adapter is guarded-but-unimplemented: it throws so the
- * checkCustomerRisk() wrapper below always catches it and returns null until a
- * real integration lands. Keeps the FraudProvider contract in place so wiring
- * a real call later is a one-function change, not a new interface.
+ * Internal blocklist stub — self-hosted historical phone success-rate check;
+ * no external Algerian fraud-scoring API is well-documented today, so this
+ * adapter is guarded-but-unimplemented: it throws so the checkCustomerRisk()
+ * wrapper below always catches it and returns null until a real
+ * implementation (e.g. querying past order/delivery history) lands. Keeps the
+ * FraudProvider contract in place so wiring a real check later is a
+ * one-function change, not a new interface.
  */
-const fraudbdProvider: FraudProvider = {
-  key: 'fraudbd',
+const internalBlocklistProvider: FraudProvider = {
+  key: 'internal_blocklist',
   async checkPhone(): Promise<FraudCheckResult> {
-    throw new Error('FraudBD live lookup is not implemented yet.')
+    throw new Error('Internal blocklist lookup is not implemented yet.')
   },
 }
 
 const PROVIDERS: Record<string, FraudProvider> = {
-  fraudbd: fraudbdProvider,
+  internal_blocklist: internalBlocklistProvider,
 }
 
 /**

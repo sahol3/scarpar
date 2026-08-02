@@ -44,7 +44,7 @@ export interface CreateOrderInput {
   tax_amount?: number
   advance_due?: number
   advance_paid?: number
-  payment_method: 'cod' | 'bkash' | 'nagad' | 'uddoktapay' | 'sslcommerz' | 'bank' | 'cash'
+  payment_method: 'cod' | 'bank' | 'cash'
   risk_level?: 'low' | 'medium' | 'high' | null
   risk_note?: string | null
   note_customer?: string | null

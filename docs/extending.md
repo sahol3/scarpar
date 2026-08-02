@@ -116,19 +116,19 @@ integrations are config-gated, not code-gated.
 
 - **Courier adapter.** Interface: `src/lib/couriers/types.ts` (`CourierAdapter { key, createOrder(),
   getStatus(), zones?() }`). **Smallest example to copy: `src/lib/couriers/manual.ts`** (no config, no
-  `ConfigRequiredError` — the trivial case) for the interface shape; **`steadfast.ts`** for a real
+  `ConfigRequiredError` — the trivial case) for the interface shape; **`yalidine.ts`** for a real
   config-gated example (reads `courier_accounts.config`, throws `ConfigRequiredError` if `!is_active`).
   Register in `src/lib/couriers/index.ts`.
-- **Payment provider.** `src/lib/payments/uddoktapay.ts` is the only one built (`createCharge()`/
-  `verifyByInvoice()`, real UddoktaPay checkout-v2/verify-payment request shapes, `ConfigRequiredError`-
-  guarded) — copy its shape for a new provider (e.g. SSLCommerz). Any new payment path must still funnel
-  through `verifyPayment()` (`src/modules/orders/actions.ts`) to actually mark a payment verified — never
-  write directly to `payments.status`.
+- **Payment provider.** No online gateway is wired in v1 — payments are cash-on-delivery only (see
+  architecture §7); `src/modules/orders/actions.ts`'s `verifyPayment()` is still the only chokepoint that
+  may flip a `payments` row to `verified`. Any new payment path (a future online gateway) must still funnel
+  through it — never write directly to `payments.status`. Follow the same `ConfigRequiredError`-guarded
+  shape as the courier adapters above for a new provider's config-read pattern.
 - **SMS / email channel.** `src/lib/notify.ts` — `ChannelAdapter = (orgId, event, payload) =>
   Promise<void>`. The `sms` and `email` channels currently exist as real adapters with a `console.log` +
   audit-trail v1 driver (per `.memory/feature-list.md`, this is "stubbed execution," not "missing
-  interface"). Swap the driver body for a real provider call (e.g. BulkSMSBD for `sms`, Resend for
-  `email`); the dispatch/fan-out logic in `notify()` doesn't change.
+  interface"). Swap the driver body for a real provider call (e.g. an Algerian SMS gateway for `sms`,
+  Resend for `email`); the dispatch/fan-out logic in `notify()` doesn't change.
 - **Settings**: every one of these needs config keys — see the next recipe. Don't invent a parallel
   config store; `org_settings` via the registry is the only place org-level config lives.
 
@@ -146,8 +146,8 @@ Single touchpoint, auto-wired everywhere else:
 4. Changes are audit-logged automatically by the settings save action — no extra `audit()` call needed
    in your feature code.
 5. `roles` (optional) restricts who can view/edit the key in the UI (e.g. API keys default to
-   `['owner','admin']` — see `payments.uddoktapay.api_key` for the pattern). Omit it for anything any
-   admin-side role should see.
+   `['owner','admin']` — see any `courier_accounts.config` field for the pattern). Omit it for anything
+   any admin-side role should see.
 
 ## Recipe: add a dashboard widget
 

@@ -12,7 +12,7 @@ import { CartLineItem } from './cart-line-item'
 import { useCart } from './cart-context'
 import { storePath } from './store-links'
 
-export function CartView({ orgSlug, lang = 'en' }: { orgSlug: string; lang?: Lang }) {
+export function CartView({ orgSlug, lang = 'ar' }: { orgSlug: string; lang?: Lang }) {
   const { items, subtotal, mounted } = useCart()
 
   if (!mounted) {

@@ -16,8 +16,8 @@ import type { ActionResult } from '@/lib/types'
 const posCheckoutSchema = z.object({
   customerName: z.string().trim().max(120).optional(),
   customerPhone: z.string().trim().max(20).optional(),
-  paymentMethod: z.enum(['cash', 'bkash', 'nagad']),
-  /** Paisa. Only meaningful for cash — omit for bKash/Nagad (assumed paid in full). */
+  paymentMethod: z.enum(['cash', 'bank']),
+  /** Paisa. Only meaningful for cash — omit for bank transfer (assumed paid in full). */
   amountReceived: z.number().int().nonnegative().optional(),
   /** Flat paisa discount, already converted from the taka input on the client. */
   discountAmount: z.number().int().nonnegative().default(0),
@@ -52,7 +52,7 @@ const WALK_IN_PHONE = '0000000000'
  * docs/conventions.md), creates the order via the shared createOrderCore contract
  * (channel 'pos', status 'completed', payment_status 'paid', stock decremented), then
  * inserts an already-verified payment row — POS is staff physically at the till, so
- * there's no manual-verify chokepoint to go through, unlike storefront manual MFS.
+ * there's no manual-verify chokepoint to go through, unlike storefront advance payments.
  */
 export async function posCheckoutAction(input: PosCheckoutInput): Promise<ActionResult<PosCheckoutResult>> {
   const ctx = await requireOrg()

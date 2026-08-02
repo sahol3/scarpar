@@ -5,10 +5,10 @@ import { cn } from "@/lib/utils"
 
 const HAPPY_PATH_STATUSES = ["pending", "assigned", "picked_up", "in_transit", "delivered"] as const
 
-/** Brand-neutral visual stepper for the public /track/[code] page. `lang` defaults to 'en'
+/** Brand-neutral visual stepper for the public /track/[code] page. `lang` defaults to 'ar'
  *  since this page doesn't yet resolve the org's localization.language setting (get_tracking()
- *  returns org_name only, not org_id) — bn labels are ready in src/lib/i18n.ts for when it does. */
-function TrackingStatusStepper({ status, lang = "en" }: { status: string; lang?: Lang }) {
+ *  returns org_name only, not org_id) — fr labels are ready in src/lib/i18n.ts for when it does. */
+function TrackingStatusStepper({ status, lang = "ar" }: { status: string; lang?: Lang }) {
   if (status === "failed" || status === "returned") {
     return (
       <div className="border-destructive/30 bg-destructive/5 text-destructive rounded-lg border px-4 py-3 text-sm font-medium">

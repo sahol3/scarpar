@@ -16,7 +16,7 @@ insert into categories (id, org_id, name, slug, sort_order) values
   ('c0000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', 'Decants', 'decants', 4);
 
 -- ============================================================================
--- PRODUCTS (10) — prices in paisa, ৳550–৳4500. #5 low-stock, #9 out-of-stock.
+-- PRODUCTS (10) — prices in paisa, دج 550–دج 4500. #5 low-stock, #9 out-of-stock.
 -- #1, #2, #7 carry 6ml/12ml/25ml variants.
 -- ============================================================================
 
@@ -102,7 +102,7 @@ insert into product_variants (id, org_id, product_id, name, sku, price, stock_qt
   ('11000000-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000007', '25ml', 'PRF-BKN-007-25', 380000, 8, false, 3);
 
 -- ============================================================================
--- CUSTOMERS (8) — Bangladeshi names, 017xxxxxxxx phones, Dhaka/Chattogram/Sylhet
+-- CUSTOMERS (8) — Algerian names, 05/06/07xxxxxxxx phones, Alger/Oran/Constantine
 -- ============================================================================
 
 insert into customers (id, org_id, name, phone, email) values
@@ -121,7 +121,7 @@ insert into customers (id, org_id, name, phone, email) values
 
 insert into discounts (org_id, code, title, type, value, scope, min_order, is_active) values
   ('00000000-0000-0000-0000-000000000001', 'WELCOME10', 'Welcome 10% Off', 'percent', 10, 'all', 0, true),
-  ('00000000-0000-0000-0000-000000000001', null, 'Free Shipping Over ৳2000', 'free_shipping', null, 'all', 200000, true);
+  ('00000000-0000-0000-0000-000000000001', null, 'Free Shipping Over دج 2000', 'free_shipping', null, 'all', 200000, true);
 
 -- ============================================================================
 -- ORDERS (6) — SCR-00001..SCR-00006, one status/payment scenario each.
@@ -144,7 +144,7 @@ insert into order_items (order_id, org_id, product_id, product_name, unit_price,
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', 'status', 'Order placed via storefront', '2026-07-12 10:15:00+06');
 
--- 2) confirmed / advance_paid — payment row verified, ৳120 advance
+-- 2) confirmed / advance_paid — payment row verified, دج 120 advance
 insert into orders
   (id, org_id, order_no, channel, customer_id, customer_name, customer_phone, customer_email,
    status, payment_status, subtotal, delivery_charge, total, advance_due, advance_paid,
@@ -153,18 +153,18 @@ values
   ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'SCR-00002', 'storefront',
    '20000000-0000-0000-0000-000000000002', 'Nusrat Jahan', '01722345602', 'nusrat.jahan@example.com',
    'confirmed', 'advance_paid', 180000, 6000, 186000, 12000, 12000,
-   'bkash', '2026-07-10 14:30:00+06', '2026-07-10 15:05:00+06');
+   'bank', '2026-07-10 14:30:00+06', '2026-07-10 15:05:00+06');
 
 insert into order_items (order_id, org_id, product_id, variant_id, product_name, variant_name, unit_price, qty, line_total) values
   ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '11000000-0000-0000-0000-000000000002', 'Royal Oudh Reserve', '12ml', 180000, 1, 180000);
 
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'status', 'Order placed via storefront', '2026-07-10 14:30:00+06'),
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'payment', 'Advance payment verified (৳120 via bKash)', '2026-07-10 15:05:00+06'),
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'payment', 'Advance payment verified (دج 120 via bank transfer)', '2026-07-10 15:05:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'status', 'Order confirmed', '2026-07-10 15:05:00+06');
 
 insert into payments (org_id, order_id, method, kind, amount, status, sender_number, verified_at) values
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'bkash', 'advance', 12000, 'verified', '01722345602', '2026-07-10 15:05:00+06');
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'bank', 'advance', 12000, 'verified', '01722345602', '2026-07-10 15:05:00+06');
 
 -- 3) packed / paid (full)
 insert into orders
@@ -173,7 +173,7 @@ insert into orders
 values
   ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'SCR-00003', 'storefront',
    '20000000-0000-0000-0000-000000000003', 'Mahmudul Hasan', '01733456703', null,
-   'packed', 'paid', 435000, 8000, 443000, 'bkash', '2026-07-08 11:00:00+06', '2026-07-08 11:40:00+06');
+   'packed', 'paid', 435000, 8000, 443000, 'bank', '2026-07-08 11:00:00+06', '2026-07-08 11:40:00+06');
 
 insert into order_items (order_id, org_id, product_id, variant_id, product_name, variant_name, unit_price, qty, line_total) values
   ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000007', '11000000-0000-0000-0000-000000000009', 'Bakhoor Nights', '25ml', 380000, 1, 380000),
@@ -181,11 +181,11 @@ insert into order_items (order_id, org_id, product_id, variant_id, product_name,
 
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'status', 'Order placed via storefront', '2026-07-08 11:00:00+06'),
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'payment', 'Full payment verified via bKash', '2026-07-08 11:40:00+06'),
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'payment', 'Full payment verified via bank transfer', '2026-07-08 11:40:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'status', 'Order packed', '2026-07-08 13:00:00+06');
 
 insert into payments (org_id, order_id, method, kind, amount, status, sender_number, verified_at) values
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'bkash', 'full', 443000, 'verified', '01733456703', '2026-07-08 11:40:00+06');
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'bank', 'full', 443000, 'verified', '01733456703', '2026-07-08 11:40:00+06');
 
 -- 4) dispatched / paid, with a WELCOME10 discount applied
 insert into orders
@@ -196,7 +196,7 @@ values
   ('30000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', 'SCR-00004', 'storefront',
    '20000000-0000-0000-0000-000000000004', 'Sabrina Akter', '01744567804', 'sabrina.akter@example.com',
    'dispatched', 'paid', 470000, 47000, 'WELCOME10', 9000, 432000,
-   'nagad', '2026-07-06 09:20:00+06', '2026-07-06 10:00:00+06', '2026-07-07 09:00:00+06');
+   'bank', '2026-07-06 09:20:00+06', '2026-07-06 10:00:00+06', '2026-07-07 09:00:00+06');
 
 insert into order_items (order_id, org_id, product_id, product_name, unit_price, qty, line_total) values
   ('30000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000004', 'Midnight Amber', 280000, 1, 280000),
@@ -204,12 +204,12 @@ insert into order_items (order_id, org_id, product_id, product_name, unit_price,
 
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'status', 'Order placed via storefront (WELCOME10 applied)', '2026-07-06 09:20:00+06'),
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'payment', 'Full payment verified via Nagad', '2026-07-06 10:00:00+06'),
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'payment', 'Full payment verified via bank transfer', '2026-07-06 10:00:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'status', 'Order packed', '2026-07-06 16:00:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'status', 'Order dispatched', '2026-07-07 09:00:00+06');
 
 insert into payments (org_id, order_id, method, kind, amount, status, sender_number, verified_at) values
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'nagad', 'full', 432000, 'verified', '01744567804', '2026-07-06 10:00:00+06');
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'bank', 'full', 432000, 'verified', '01744567804', '2026-07-06 10:00:00+06');
 
 -- 5) completed / paid via POS (in-store, no delivery leg)
 insert into orders

@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BD_DISTRICTS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 import { fromPaisa } from '@/lib/money'
 
 import { updateJob } from '../actions'
@@ -92,7 +92,7 @@ function JobDetailForm({ job, teamMembers }: JobDetailFormProps) {
                 name="quote_amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quote (৳)</FormLabel>
+                    <FormLabel>Quote (دج)</FormLabel>
                     <FormControl>
                       <Input inputMode="decimal" {...field} />
                     </FormControl>
@@ -105,7 +105,7 @@ function JobDetailForm({ job, teamMembers }: JobDetailFormProps) {
                 name="final_amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Final amount (optional, ৳)</FormLabel>
+                    <FormLabel>Final amount (optional, دج)</FormLabel>
                     <FormControl>
                       <Input inputMode="decimal" {...field} />
                     </FormControl>
@@ -147,17 +147,17 @@ function JobDetailForm({ job, teamMembers }: JobDetailFormProps) {
                 name="address_district"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>District</FormLabel>
+                    <FormLabel>Wilaya</FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select district" />
+                          <SelectValue placeholder="Select wilaya" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {BD_DISTRICTS.map((district) => (
-                          <SelectItem key={district.name} value={district.name}>
-                            {district.name}
+                        {DZ_WILAYA_NAMES.map((district) => (
+                          <SelectItem key={district} value={district}>
+                            {district}
                           </SelectItem>
                         ))}
                       </SelectContent>

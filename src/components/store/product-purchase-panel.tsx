@@ -26,7 +26,7 @@ export function ProductPurchasePanel({
   product,
   variants,
   image,
-  lang = 'en',
+  lang = 'ar',
 }: {
   product: PurchaseProduct
   variants: ProductVariant[]
@@ -57,7 +57,7 @@ export function ProductPurchasePanel({
       image,
       qty,
     })
-    toast.success(lang === 'bn' ? 'কার্টে যোগ করা হয়েছে' : 'Added to cart')
+    toast.success(lang === 'ar' ? 'تمت الإضافة إلى السلة' : 'Ajouté au panier')
   }
 
   return (

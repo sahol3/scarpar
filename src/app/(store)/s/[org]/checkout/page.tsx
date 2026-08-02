@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 
 import { t, type Lang } from '@/lib/i18n'
-import { getOrgSettings, getSetting, settingBool, settingNum, settingStr } from '@/lib/settings'
+import { getOrgSettings, settingBool, settingNum, settingStr } from '@/lib/settings'
 import type { PageProps } from '@/lib/types'
 
 import { CheckoutForm, type CheckoutSettings } from '@/components/store/checkout-form'
@@ -17,19 +17,15 @@ export default async function CheckoutPage({ params }: PageProps<{ org: string }
   const settings = await getOrgSettings(org.id)
   const lang = settingStr(settings, 'localization.language') as Lang
 
-  const mfsNumbers = getSetting<{ bkash: string; nagad: string }>(settings, 'payments.manual_mfs.numbers')
-
   const checkoutSettings: CheckoutSettings = {
     orgSlug: org.slug,
     lang,
     codEnabled: settingBool(settings, 'payments.cod_enabled'),
-    manualMfsEnabled: settingBool(settings, 'payments.manual_mfs.enabled'),
-    mfsNumbers: mfsNumbers ?? { bkash: '', nagad: '' },
-    uddoktapayEnabled: settingBool(settings, 'payments.uddoktapay.enabled'),
     advanceRequiredSetting: settingBool(settings, 'payments.advance_required'),
     advanceAmount: settingNum(settings, 'payments.advance_amount'),
     advanceType: settingStr(settings, 'payments.advance_type'),
     freeDeliveryAbove: settingNum(settings, 'delivery.free_above'),
+    bankDetails: settingStr(settings, 'payments.bank_details'),
   }
 
   return (

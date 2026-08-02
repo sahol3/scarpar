@@ -42,7 +42,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         rows.map((row) => ({ date: row.date, revenue: fromPaisa(row.revenue), orders: row.orders })),
         [
           { key: 'date', label: 'Date' },
-          { key: 'revenue', label: 'Revenue (BDT)' },
+          { key: 'revenue', label: 'Revenue (DZD)' },
           { key: 'orders', label: 'Orders' },
         ],
       )
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         rows.map((row) => ({ product: row.productName, revenue: fromPaisa(row.revenue), units: row.units })),
         [
           { key: 'product', label: 'Product' },
-          { key: 'revenue', label: 'Revenue (BDT)' },
+          { key: 'revenue', label: 'Revenue (DZD)' },
           { key: 'units', label: 'Units' },
         ],
       )
@@ -93,9 +93,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           { key: 'date', label: 'Date' },
           { key: 'invoiceNo', label: 'Invoice/Order No' },
           { key: 'customer', label: 'Customer' },
-          { key: 'subtotal', label: 'Subtotal (BDT)' },
-          { key: 'vat', label: 'VAT (BDT)' },
-          { key: 'total', label: 'Total (BDT)' },
+          { key: 'subtotal', label: 'Subtotal (DZD)' },
+          { key: 'vat', label: 'VAT (DZD)' },
+          { key: 'total', label: 'Total (DZD)' },
         ],
       )
       return csvResponse(filename, csv)

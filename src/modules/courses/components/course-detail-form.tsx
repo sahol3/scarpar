@@ -71,7 +71,7 @@ function CourseDetailForm({ course }: CourseDetailFormProps) {
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Price (৳)</FormLabel>
+                    <FormLabel>Price (دج)</FormLabel>
                     <FormControl>
                       <Input inputMode="decimal" {...field} />
                     </FormControl>

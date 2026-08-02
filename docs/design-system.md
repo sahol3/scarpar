@@ -22,7 +22,7 @@ neutrals, borders over shadows, one accent (deep emerald), dense/fast/keyboard-f
 | `chart-1`…`chart-4` | emerald-600, amber-700, blue-600, violet-600 | emerald-500, amber-500, blue-500, violet-500 | data-viz only — exempt from "one accent" |
 | `sidebar`, `-accent`, `-border` (+`-foreground`) | mirrors `background`/`accent`/`border` | mirrors dark col | nav rail recedes to page bg, border-separated |
 | `radius` (`-sm/-md/-lg/-xl`) | 4 / 6 / 8 / 12px | same | inputs+buttons = md(6), cards = lg(8) |
-| `font-sans`, `font-bengali` | Inter, Noto Sans Bengali | same | next/font vars, body-scoped |
+| `font-sans`, `font-arabic` | Inter, Noto Naskh Arabic | same | next/font vars, body-scoped |
 
 Brand/status colors (primary, success, warning, destructive) are **theme-invariant** — same
 meaning, same weight in both themes. Only neutrals and chart marks adapt per theme.

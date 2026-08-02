@@ -19,12 +19,12 @@ import {
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BD_DISTRICTS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 
 import { createCustomer } from '../actions'
 import { customerFormSchema, type CustomerFormInput } from '../schemas'
 
-const DISTRICT_OPTIONS = BD_DISTRICTS.map((d) => d.name).sort((a, b) => a.localeCompare(b))
+const DISTRICT_OPTIONS = [...DZ_WILAYA_NAMES].sort((a, b) => a.localeCompare(b))
 
 export function NewCustomerDialog() {
   const router = useRouter()
@@ -146,11 +146,11 @@ export function NewCustomerDialog() {
                   name="address.district"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>District</FormLabel>
+                      <FormLabel>Wilaya</FormLabel>
                       <Select value={field.value || undefined} onValueChange={field.onChange}>
                         <FormControl>
                           <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Select district" />
+                            <SelectValue placeholder="Select wilaya" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>

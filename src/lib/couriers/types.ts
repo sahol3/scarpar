@@ -10,10 +10,9 @@ import type { OrgContext } from '@/lib/auth'
 import type { DeliveryCourier } from '@/types/db'
 
 /**
- * Thrown by a real adapter (steadfast/pathao) when the org has no active
- * courier_accounts row (or is missing required keys within it), and by
- * getAdapter() for a courier with no adapter implemented (e.g. 'redx').
- * Callers (src/modules/delivery/actions.ts) return `err.message` as the
+ * Thrown by a real adapter (yalidine/zr_express/noest_express/guepex) when the
+ * org has no active courier_accounts row (or is missing required keys within
+ * it). Callers (src/modules/delivery/actions.ts) return `err.message` as the
  * action's error string; the UI surfaces it as a toast with a fallback
  * suggestion to switch to the manual adapter.
  */
@@ -67,7 +66,7 @@ export interface CourierAdapter {
 }
 
 /**
- * Shared config loader for the real adapters. First line of every steadfast/pathao
+ * Shared config loader for the real adapters. First line of every DZ courier
  * call per docs/architecture.md §8 ("guarded: if no courier_accounts config, throw
  * ConfigRequired"). Reads via the RLS-scoped server client — the caller is already
  * inside a requireOrg()'d server action, so the member's session can read its own
@@ -75,7 +74,7 @@ export interface CourierAdapter {
  */
 export async function requireCourierConfig(
   ctx: OrgContext,
-  courier: Extract<DeliveryCourier, 'steadfast' | 'pathao'>,
+  courier: Extract<DeliveryCourier, 'yalidine' | 'zr_express' | 'noest_express' | 'guepex'>,
   friendlyName: string,
 ): Promise<Record<string, unknown>> {
   const supabase = await getServerClient()

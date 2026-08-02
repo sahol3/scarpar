@@ -11,13 +11,13 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BD_DISTRICTS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 import type { CustomerAddress } from '@/types/db'
 
 import { addCustomerAddress, updateCustomerAddress } from '../actions'
 import { addressFormSchema, type AddressFormInput } from '../schemas'
 
-const DISTRICT_OPTIONS = BD_DISTRICTS.map((d) => d.name).sort((a, b) => a.localeCompare(b))
+const DISTRICT_OPTIONS = [...DZ_WILAYA_NAMES].sort((a, b) => a.localeCompare(b))
 
 const EMPTY_VALUES: AddressFormInput = {
   label: '',
@@ -139,11 +139,11 @@ export function AddressFormDialog({
                 name="district"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>District</FormLabel>
+                    <FormLabel>Wilaya</FormLabel>
                     <Select value={field.value || undefined} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select district" />
+                          <SelectValue placeholder="Select wilaya" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>

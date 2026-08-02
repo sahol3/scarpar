@@ -31,9 +31,9 @@ insert into public.orgs (
   'pro',
   array['catalog','orders','pos','customers','discounts','delivery','receipts',
         'cms','storefront','reports','expenses','reviews']::text[],
-  'BDT',
-  'BD',
-  'Asia/Dhaka',
+  'DZD',
+  'DZ',
+  'Africa/Algiers',
   true
 )
 on conflict (id) do update set
@@ -72,7 +72,7 @@ values
   ('00000000-0000-0000-0000-000000000001', 'payments.advance_required', 'true'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'payments.advance_amount',   '12000'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'storefront.announcement',
-     '"Free delivery inside Dhaka on orders over ৳2000"'::jsonb),
+     '"Free delivery inside Alger on orders over دج 2000"'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'storefront.whatsapp_number', '"+8801700000000"'::jsonb)
 on conflict (org_id, key) do update set
   value      = excluded.value,
@@ -113,7 +113,7 @@ insert into categories (id, org_id, name, slug, sort_order) values
   ('c0000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', 'Decants', 'decants', 4);
 
 -- ============================================================================
--- PRODUCTS (10) — prices in paisa, ৳550–৳4500. #5 low-stock, #9 out-of-stock.
+-- PRODUCTS (10) — prices in paisa, دج 550–دج 4500. #5 low-stock, #9 out-of-stock.
 -- #1, #2, #7 carry 6ml/12ml/25ml variants.
 -- ============================================================================
 
@@ -199,7 +199,7 @@ insert into product_variants (id, org_id, product_id, name, sku, price, stock_qt
   ('11000000-0000-0000-0000-000000000009', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000007', '25ml', 'PRF-BKN-007-25', 380000, 8, false, 3);
 
 -- ============================================================================
--- CUSTOMERS (8) — Bangladeshi names, 017xxxxxxxx phones, Dhaka/Chattogram/Sylhet
+-- CUSTOMERS (8) — Algerian names, 05/06/07xxxxxxxx phones, Alger/Oran/Constantine
 -- ============================================================================
 
 insert into customers (id, org_id, name, phone, email) values
@@ -218,7 +218,7 @@ insert into customers (id, org_id, name, phone, email) values
 
 insert into discounts (org_id, code, title, type, value, scope, min_order, is_active) values
   ('00000000-0000-0000-0000-000000000001', 'WELCOME10', 'Welcome 10% Off', 'percent', 10, 'all', 0, true),
-  ('00000000-0000-0000-0000-000000000001', null, 'Free Shipping Over ৳2000', 'free_shipping', null, 'all', 200000, true);
+  ('00000000-0000-0000-0000-000000000001', null, 'Free Shipping Over دج 2000', 'free_shipping', null, 'all', 200000, true);
 
 -- ============================================================================
 -- ORDERS (6) — SCR-00001..SCR-00006, one status/payment scenario each.
@@ -241,7 +241,7 @@ insert into order_items (order_id, org_id, product_id, product_name, unit_price,
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000001', 'status', 'Order placed via storefront', '2026-07-12 10:15:00+06');
 
--- 2) confirmed / advance_paid — payment row verified, ৳120 advance
+-- 2) confirmed / advance_paid — payment row verified, دج 120 advance
 insert into orders
   (id, org_id, order_no, channel, customer_id, customer_name, customer_phone, customer_email,
    status, payment_status, subtotal, delivery_charge, total, advance_due, advance_paid,
@@ -250,18 +250,18 @@ values
   ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'SCR-00002', 'storefront',
    '20000000-0000-0000-0000-000000000002', 'Nusrat Jahan', '01722345602', 'nusrat.jahan@example.com',
    'confirmed', 'advance_paid', 180000, 6000, 186000, 12000, 12000,
-   'bkash', '2026-07-10 14:30:00+06', '2026-07-10 15:05:00+06');
+   'bank', '2026-07-10 14:30:00+06', '2026-07-10 15:05:00+06');
 
 insert into order_items (order_id, org_id, product_id, variant_id, product_name, variant_name, unit_price, qty, line_total) values
   ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '11000000-0000-0000-0000-000000000002', 'Royal Oudh Reserve', '12ml', 180000, 1, 180000);
 
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'status', 'Order placed via storefront', '2026-07-10 14:30:00+06'),
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'payment', 'Advance payment verified (৳120 via bKash)', '2026-07-10 15:05:00+06'),
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'payment', 'Advance payment verified (دج 120 via bank transfer)', '2026-07-10 15:05:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'status', 'Order confirmed', '2026-07-10 15:05:00+06');
 
 insert into payments (org_id, order_id, method, kind, amount, status, sender_number, verified_at) values
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'bkash', 'advance', 12000, 'verified', '01722345602', '2026-07-10 15:05:00+06');
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000002', 'bank', 'advance', 12000, 'verified', '01722345602', '2026-07-10 15:05:00+06');
 
 -- 3) packed / paid (full)
 insert into orders
@@ -270,7 +270,7 @@ insert into orders
 values
   ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'SCR-00003', 'storefront',
    '20000000-0000-0000-0000-000000000003', 'Mahmudul Hasan', '01733456703', null,
-   'packed', 'paid', 435000, 8000, 443000, 'bkash', '2026-07-08 11:00:00+06', '2026-07-08 11:40:00+06');
+   'packed', 'paid', 435000, 8000, 443000, 'bank', '2026-07-08 11:00:00+06', '2026-07-08 11:40:00+06');
 
 insert into order_items (order_id, org_id, product_id, variant_id, product_name, variant_name, unit_price, qty, line_total) values
   ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000007', '11000000-0000-0000-0000-000000000009', 'Bakhoor Nights', '25ml', 380000, 1, 380000),
@@ -278,11 +278,11 @@ insert into order_items (order_id, org_id, product_id, variant_id, product_name,
 
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'status', 'Order placed via storefront', '2026-07-08 11:00:00+06'),
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'payment', 'Full payment verified via bKash', '2026-07-08 11:40:00+06'),
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'payment', 'Full payment verified via bank transfer', '2026-07-08 11:40:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'status', 'Order packed', '2026-07-08 13:00:00+06');
 
 insert into payments (org_id, order_id, method, kind, amount, status, sender_number, verified_at) values
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'bkash', 'full', 443000, 'verified', '01733456703', '2026-07-08 11:40:00+06');
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000003', 'bank', 'full', 443000, 'verified', '01733456703', '2026-07-08 11:40:00+06');
 
 -- 4) dispatched / paid, with a WELCOME10 discount applied
 insert into orders
@@ -293,7 +293,7 @@ values
   ('30000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', 'SCR-00004', 'storefront',
    '20000000-0000-0000-0000-000000000004', 'Sabrina Akter', '01744567804', 'sabrina.akter@example.com',
    'dispatched', 'paid', 470000, 47000, 'WELCOME10', 9000, 432000,
-   'nagad', '2026-07-06 09:20:00+06', '2026-07-06 10:00:00+06', '2026-07-07 09:00:00+06');
+   'bank', '2026-07-06 09:20:00+06', '2026-07-06 10:00:00+06', '2026-07-07 09:00:00+06');
 
 insert into order_items (order_id, org_id, product_id, product_name, unit_price, qty, line_total) values
   ('30000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000004', 'Midnight Amber', 280000, 1, 280000),
@@ -301,12 +301,12 @@ insert into order_items (order_id, org_id, product_id, product_name, unit_price,
 
 insert into order_events (org_id, order_id, type, message, created_at) values
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'status', 'Order placed via storefront (WELCOME10 applied)', '2026-07-06 09:20:00+06'),
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'payment', 'Full payment verified via Nagad', '2026-07-06 10:00:00+06'),
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'payment', 'Full payment verified via bank transfer', '2026-07-06 10:00:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'status', 'Order packed', '2026-07-06 16:00:00+06'),
   ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'status', 'Order dispatched', '2026-07-07 09:00:00+06');
 
 insert into payments (org_id, order_id, method, kind, amount, status, sender_number, verified_at) values
-  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'nagad', 'full', 432000, 'verified', '01744567804', '2026-07-06 10:00:00+06');
+  ('00000000-0000-0000-0000-000000000001', '30000000-0000-0000-0000-000000000004', 'bank', 'full', 432000, 'verified', '01744567804', '2026-07-06 10:00:00+06');
 
 -- 5) completed / paid via POS (in-store, no delivery leg)
 insert into orders
@@ -380,18 +380,10 @@ begin;
 
 insert into delivery_zones (id, org_id, name, districts, charge, cod_available, advance_required, eta_text, is_active, position)
 values
-  ('40000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Inside Dhaka',
-    array['Dhaka'], 6000, true, false, '24 hours', true, 1),
-  ('40000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Outside Dhaka',
-    array['Bagerhat','Bandarban','Barguna','Barisal','Bhola','Bogra','Brahmanbaria','Chandpur',
-          'Chapainawabganj','Chittagong','Chuadanga','Comilla','Cox''s Bazar','Dinajpur','Faridpur',
-          'Feni','Gaibandha','Gazipur','Gopalganj','Habiganj','Jamalpur','Jessore','Jhalokati',
-          'Jhenaidah','Joypurhat','Khagrachhari','Khulna','Kishoreganj','Kurigram','Kushtia',
-          'Lakshmipur','Lalmonirhat','Madaripur','Magura','Manikganj','Meherpur','Moulvibazar',
-          'Munshiganj','Mymensingh','Naogaon','Narail','Narayanganj','Narsingdi','Natore',
-          'Netrokona','Nilphamari','Noakhali','Pabna','Panchagarh','Patuakhali','Pirojpur',
-          'Rajbari','Rajshahi','Rangamati','Rangpur','Satkhira','Shariatpur','Sherpur',
-          'Sirajganj','Sunamganj','Sylhet','Tangail','Thakurgaon'],
+  ('40000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Inside Alger',
+    array['Alger'], 6000, true, false, '24 hours', true, 1),
+  ('40000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'Outside Alger',
+    array['Adrar','Chlef','Laghouat','Oum El Bouaghi','Batna','Béjaïa','Biskra','Béchar','Blida','Bouira','Tamanrasset','Tébessa','Tlemcen','Tiaret','Tizi Ouzou','Djelfa','Jijel','Sétif','Saïda','Skikda','Sidi Bel Abbès','Annaba','Guelma','Constantine','Médéa','Mostaganem','M''Sila','Mascara','Ouargla','Oran','El Bayadh','Illizi','Bordj Bou Arréridj','Boumerdès','El Tarf','Tindouf','Tissemsilt','El Oued','Khenchela','Souk Ahras','Tipaza','Mila','Aïn Defla','Naâma','Aïn Témouchent','Ghardaïa','Relizane','Timimoun','Bordj Badji Mokhtar','Ouled Djellal','Béni Abbès','In Salah','In Guezzam','Touggourt','Djanet','El M''Ghair','El Meniaa'],
     12000, true, true, '2-3 days', true, 2);
 
 -- ============================================================================
@@ -405,9 +397,9 @@ insert into riders (id, org_id, name, phone, vehicle, is_active, cash_on_hand) v
 -- ============================================================================
 -- Bring 3 of 02_commerce.sql's orders forward into the delivery lifecycle + backfill the
 -- delivery_zone_id FK that 0003's migration just added.
---   SCR-00002 (confirmed, advance_paid ৳120 of ৳1860 total) -> dispatched, Inside Dhaka
---   SCR-00003 (packed, paid in full via bKash)               -> dispatched, Outside Dhaka (courier)
---   SCR-00004 (dispatched, paid in full via Nagad)            -> delivered, Inside Dhaka
+--   SCR-00002 (confirmed, advance_paid دج 120 of دج 1860 total) -> dispatched, Inside Alger
+--   SCR-00003 (packed, paid in full via bank transfer)               -> dispatched, Outside Alger (courier)
+--   SCR-00004 (dispatched, paid in full via bank transfer)            -> delivered, Inside Alger
 -- ============================================================================
 
 update orders set
@@ -431,7 +423,7 @@ where id = '30000000-0000-0000-0000-000000000004' and org_id = '00000000-0000-00
 -- ============================================================================
 -- deliveries (3)
 --   1) SCR-00002 / Nusrat Jahan — rider, in_transit, otp_code + real COD balance (1860-120=1740 tk)
---   2) SCR-00004 / Sabrina Akter — rider, delivered + cod_collected (already paid in full -> ৳0 COD)
+--   2) SCR-00004 / Sabrina Akter — rider, delivered + cod_collected (already paid in full -> دج 0 COD)
 --   3) SCR-00003 / Mahmudul Hasan — courier (manual adapter), in_transit, tracking 'SF123456789'
 -- ============================================================================
 
@@ -444,20 +436,20 @@ insert into deliveries (
    '30000000-0000-0000-0000-000000000002', 'DLV-00001', 'rider',
    '50000000-0000-0000-0000-000000000001', null, null, 'DLV-00001',
    'in_transit', 174000, false, null, '4821', 'Nusrat Jahan', '01722345602',
-   '{"line1":"House 6, Road 12","area":"Uttara Sector 4","district":"Dhaka","postcode":"1230"}'::jsonb,
+   '{"line1":"Cité El Badr, Bt 6","area":"Bab Ezzouar","district":"Alger","postcode":"16311"}'::jsonb,
    '40000000-0000-0000-0000-000000000001', 6000, now() - interval '5 hours', null),
 
   ('60000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001',
    '30000000-0000-0000-0000-000000000004', 'DLV-00002', 'rider',
    '50000000-0000-0000-0000-000000000002', null, null, 'DLV-00002',
    'delivered', 0, true, now() - interval '2 days', '7734', 'Sabrina Akter', '01744567804',
-   '{"line1":"House 14, Road 7","area":"Dhanmondi","district":"Dhaka","postcode":"1209"}'::jsonb,
+   '{"line1":"Rue Didouche Mourad 14","area":"Hydra","district":"Alger","postcode":"16035"}'::jsonb,
    '40000000-0000-0000-0000-000000000001', 6000, now() - interval '3 days', now() - interval '2 days'),
 
   ('60000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001',
    '30000000-0000-0000-0000-000000000003', 'DLV-00003', 'courier', null, 'manual', 'SF123456789', 'SF123456789',
    'in_transit', 0, false, null, null, 'Mahmudul Hasan', '01733456703',
-   '{"line1":"House 9, Lane 2","area":"Agrabad","district":"Chattogram","postcode":"4100"}'::jsonb,
+   '{"line1":"Rue Larbi Ben M'hidi 9","area":"Sidi Bel Abbès Centre","district":"Sidi Bel Abbès","postcode":"22000"}'::jsonb,
    '40000000-0000-0000-0000-000000000002', 12000, now() - interval '1 day', null);
 
 -- ============================================================================
@@ -474,7 +466,7 @@ insert into delivery_events (org_id, delivery_id, status, note, created_at) valu
   ('00000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000002', 'in_transit', 'On the way to customer.',        now() - interval '2 days' - interval '4 hours'),
   ('00000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000002', 'delivered',  'Delivered, signed by recipient.', now() - interval '2 days'),
 
-  ('00000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000003', 'assigned',   'Handed to Steadfast courier partner (manual tracking).', now() - interval '1 day'),
+  ('00000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000003', 'assigned',   'Handed to Yalidine courier partner (manual tracking).', now() - interval '1 day'),
   ('00000000-0000-0000-0000-000000000001', '60000000-0000-0000-0000-000000000003', 'in_transit', 'In transit with courier.', now() - interval '10 hours');
 
 -- ============================================================================
@@ -484,16 +476,16 @@ insert into delivery_events (org_id, delivery_id, status, note, created_at) valu
 insert into cms_pages (id, org_id, title, slug, type, blocks, status, published_at) values
   ('70000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'Home', 'home', 'home',
    '[
-      {"_key":"blk00001","_type":"hero","heading":"Fresh Picks, Fast Delivery Across Bangladesh","subheading":"Shop quality products with cash on delivery and same-day dispatch inside Dhaka.","image":"00000000-0000-0000-0000-000000000001/cms/home-hero.jpg","ctaLabel":"Shop Now","ctaHref":"/products"},
+      {"_key":"blk00001","_type":"hero","heading":"Fresh Picks, Fast Delivery Across Algeria","subheading":"Shop quality products with cash on delivery and same-day dispatch inside Alger.","image":"00000000-0000-0000-0000-000000000001/cms/home-hero.jpg","ctaLabel":"Shop Now","ctaHref":"/products"},
       {"_key":"blk00002","_type":"productGrid","title":"Featured Products","mode":"featured","categoryId":null,"productIds":[],"limit":8},
       {"_key":"blk00003","_type":"imageWithText","image":"00000000-0000-0000-0000-000000000001/cms/about-strip.jpg","heading":"Why Shop With Us","body":"Verified sellers, secure cash-on-delivery, and a support team that answers in minutes.","imageSide":"left"},
-      {"_key":"blk00004","_type":"faq","items":[{"q":"Do you deliver outside Dhaka?","a":"Yes, every district in Bangladesh: 24 hours inside Dhaka and 2-3 days outside Dhaka."},{"q":"Can I pay cash on delivery?","a":"Yes, COD is available on every order; some zones require a small advance."},{"q":"How do I track my order?","a":"Use the tracking link in your confirmation SMS, or visit the track page with your delivery code."}]},
+      {"_key":"blk00004","_type":"faq","items":[{"q":"Do you deliver outside Alger?","a":"Yes, every wilaya in Algeria: 24 hours inside Alger and 2-3 days outside Alger."},{"q":"Can I pay cash on delivery?","a":"Yes, COD is available on every order; some zones require a small advance."},{"q":"How do I track my order?","a":"Use the tracking link in your confirmation SMS, or visit the track page with your delivery code."}]},
       {"_key":"blk00005","_type":"testimonials","mode":"reviews"}
     ]'::jsonb,
    'published', now() - interval '20 days'),
 
   ('70000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'About Us', 'about', 'page',
-   '[{"_key":"blk00001","_type":"richText","html":"<h2>About Us</h2><p>We are a Dhaka-based online store bringing quality products to every district in Bangladesh with fast, reliable cash-on-delivery shipping.</p>"}]'::jsonb,
+   '[{"_key":"blk00001","_type":"richText","html":"<h2>About Us</h2><p>We are an Alger-based online store bringing quality products to every wilaya in Algeria with fast, reliable cash-on-delivery shipping.</p>"}]'::jsonb,
    'published', now() - interval '20 days'),
 
   ('70000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'Privacy Policy', 'privacy', 'policy',
@@ -516,7 +508,7 @@ insert into menus (id, org_id, handle, items) values
 
 insert into expenses (org_id, category, amount, note, spent_at) values
   ('00000000-0000-0000-0000-000000000001', 'Packaging',    320000,  'Poly bags, boxes, and tape restock.',          current_date - 3),
-  ('00000000-0000-0000-0000-000000000001', 'Courier Bill', 1850000, 'Monthly Steadfast/Pathao courier settlement.', current_date - 7),
+  ('00000000-0000-0000-0000-000000000001', 'Courier Bill', 1850000, 'Monthly Yalidine/ZR Express courier settlement.', current_date - 7),
   ('00000000-0000-0000-0000-000000000001', 'Facebook Ads', 1200000, 'Boosted posts for the weekend sale.',          current_date - 12),
   ('00000000-0000-0000-0000-000000000001', 'Rent',         4500000, 'Shop + storage rent.',                        current_date - 20),
   ('00000000-0000-0000-0000-000000000001', 'Salary',       9000000, 'Staff salary, current month.',                current_date - 28);
@@ -538,8 +530,8 @@ where org_id = '00000000-0000-0000-0000-000000000001' and doc_type = 'job';
 
 insert into courses (id, org_id, title, slug, description, price, status) values
   ('a0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001',
-   'Intro to Online Selling in Bangladesh', 'intro-online-selling',
-   'A short course on setting up a storefront, pricing in taka, and running cash-on-delivery checkout for Bangladeshi customers.',
+   'Intro to Online Selling in Algeria', 'intro-online-selling',
+   'A short course on setting up a storefront, pricing in dinars, and running cash-on-delivery checkout for Algerian customers.',
    150000, 'active');
 
 insert into lessons (id, org_id, course_id, title, content, position, is_free) values
@@ -560,7 +552,7 @@ insert into service_jobs (id, org_id, job_no, customer_id, title, description, s
    '20000000-0000-0000-0000-000000000007', 'AC Installation & Gas Refill',
    '2-ton split AC unit installation with gas top-up, customer-supplied unit.',
    'quoted', 850000,
-   '{"line1":"House 45, Road 11","area":"Banani","district":"Dhaka","postcode":"1213"}'::jsonb);
+   '{"line1":"Rue des Frères Bouadou 45","area":"El Biar","district":"Alger","postcode":"16030"}'::jsonb);
 
 -- ============================================================================
 -- listings (1) + inquiries (1)
@@ -571,10 +563,10 @@ insert into listings (
   description, features, status
 ) values (
   'd0000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001',
-  '3-Bed Apartment in Dhanmondi', '3-bed-apartment-dhanmondi', 'sale', 'apartment',
+  '3-Bed Apartment in Hydra', '3-bed-apartment-hydra', 'sale', 'apartment',
   1350000000, 1450, 3, 3,
-  '{"line1":"Road 8/A, House 22","area":"Dhanmondi","district":"Dhaka","postcode":"1209"}'::jsonb,
-  'Bright 3-bed apartment in a quiet Dhanmondi residential block, close to the lake and main road access.',
+  '{"line1":"Rue 8, Villa 22","area":"Hydra","district":"Alger","postcode":"16035"}'::jsonb,
+  'Bright 3-bed apartment in a quiet Hydra residential block, close to the lake and main road access.',
   array['Lift','Generator Backup','Parking','Gas Line'],
   'active'
 );

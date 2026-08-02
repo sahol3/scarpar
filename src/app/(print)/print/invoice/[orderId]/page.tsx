@@ -18,10 +18,6 @@ export const dynamic = 'force-dynamic'
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   cod: 'Cash on Delivery',
-  bkash: 'bKash',
-  nagad: 'Nagad',
-  uddoktapay: 'UddoktaPay',
-  sslcommerz: 'SSLCommerz',
   bank: 'Bank Transfer',
   cash: 'Cash',
 }

@@ -17,10 +17,6 @@ export const OrderStatusValues = [
 
 export const PaymentMethodValues = [
   'cod',
-  'bkash',
-  'nagad',
-  'uddoktapay',
-  'sslcommerz',
   'bank',
   'cash',
 ] as const

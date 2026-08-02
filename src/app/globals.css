@@ -26,7 +26,7 @@
 
   /* ---------- Fonts (next/font injects the real stacks on <body>; see layout.tsx) ---------- */
   --font-sans: var(--font-sans);
-  --font-bengali: var(--font-bengali);
+  --font-arabic: var(--font-arabic);
 
   /* ---------- Dense-UI type scale — 11/12/13/14/16/20/24, see docs/design-system.md §b ---------- */
   --text-2xs: 0.6875rem;       /* 11px */
@@ -130,7 +130,7 @@
   /* Fallback stacks — next/font (layout.tsx) overrides these on <body> via the SAME
      variable names, so this only matters before hydration / outside body. */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-bengali: 'Noto Sans Bengali', var(--font-sans);
+  --font-arabic: 'Noto Naskh Arabic', var(--font-sans);
 
   --background: var(--color-zinc-50);
   --foreground: var(--color-zinc-950);
@@ -272,9 +272,10 @@
 }
 
 @layer utilities {
-  /* Bengali text — swap the family for any block/label rendering Bangla copy */
-  .text-bengali {
-    font-family: var(--font-bengali);
+  /* Arabic text — swap the family for any block/label rendering Arabic copy, and
+     for RTL contexts (storefront root sets dir="rtl" when lang === 'ar') */
+  .font-arabic {
+    font-family: var(--font-arabic);
   }
 
   /* Money/quantity table columns must never use proportional numerals (digits have to

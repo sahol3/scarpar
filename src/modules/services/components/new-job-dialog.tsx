@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BD_DISTRICTS } from '@/lib/bd'
+import { DZ_WILAYA_NAMES } from '@/lib/dz'
 
 import { createJob } from '../actions'
 import { newJobSchema, type CustomerSearchResult, type NewJobValues } from '../schemas'
@@ -166,7 +166,7 @@ function NewJobDialog() {
                 name="quote_amount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Quote (৳)</FormLabel>
+                    <FormLabel>Quote (دج)</FormLabel>
                     <FormControl>
                       <Input inputMode="decimal" {...field} />
                     </FormControl>
@@ -208,17 +208,17 @@ function NewJobDialog() {
                 name="address_district"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>District</FormLabel>
+                    <FormLabel>Wilaya</FormLabel>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select district" />
+                          <SelectValue placeholder="Select wilaya" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {BD_DISTRICTS.map((district) => (
-                          <SelectItem key={district.name} value={district.name}>
-                            {district.name}
+                        {DZ_WILAYA_NAMES.map((district) => (
+                          <SelectItem key={district} value={district}>
+                            {district}
                           </SelectItem>
                         ))}
                       </SelectContent>

@@ -1,7 +1,8 @@
-// Tiny storefront i18n dict (en/bn). Admin stays English per conventions.md.
-// Bengali rendering: pair with the `.text-bengali` class on the rendered element.
+// Tiny storefront i18n dict (ar/fr). Admin stays English per conventions.md.
+// Arabic is RTL — pair with `dir="rtl"` on the storefront root when lang === 'ar'
+// and the `.font-arabic` class (see globals.css) on rendered text.
 
-export type Lang = 'en' | 'bn'
+export type Lang = 'ar' | 'fr'
 
 export type StringKey =
   | 'add_to_cart'
@@ -18,6 +19,7 @@ export type StringKey =
   | 'name'
   | 'address'
   | 'district'
+  | 'wilaya'
   | 'track_order'
   | 'order_placed'
   | 'continue_shopping'
@@ -39,41 +41,47 @@ export type StringKey =
   | 'failed'
   | 'returned'
 
-export const STRINGS: Record<StringKey, { en: string; bn: string }> = {
-  add_to_cart: { en: 'Add to cart', bn: 'কার্টে যোগ করুন' },
-  checkout: { en: 'Checkout', bn: 'চেকআউট' },
-  place_order: { en: 'Place order', bn: 'অর্ডার করুন' },
-  your_cart: { en: 'Your cart', bn: 'আপনার কার্ট' },
-  cart_empty: { en: 'Your cart is empty', bn: 'আপনার কার্ট খালি' },
-  subtotal: { en: 'Subtotal', bn: 'সাবটোটাল' },
-  delivery_charge: { en: 'Delivery charge', bn: 'ডেলিভারি চার্জ' },
-  total: { en: 'Total', bn: 'সর্বমোট' },
-  advance_payable: { en: 'Advance payable', bn: 'অগ্রিম পরিশোধযোগ্য' },
-  cash_on_delivery: { en: 'Cash on delivery', bn: 'ক্যাশ অন ডেলিভারি' },
-  phone: { en: 'Phone number', bn: 'ফোন নম্বর' },
-  name: { en: 'Name', bn: 'নাম' },
-  address: { en: 'Address', bn: 'ঠিকানা' },
-  district: { en: 'District', bn: 'জেলা' },
-  track_order: { en: 'Track order', bn: 'অর্ডার ট্র্যাক করুন' },
-  order_placed: { en: 'Order placed', bn: 'অর্ডার সম্পন্ন হয়েছে' },
-  continue_shopping: { en: 'Continue shopping', bn: 'কেনাকাটা চালিয়ে যান' },
-  search: { en: 'Search', bn: 'খুঁজুন' },
-  all_products: { en: 'All products', bn: 'সকল পণ্য' },
-  out_of_stock: { en: 'Out of stock', bn: 'স্টক নেই' },
-  quantity: { en: 'Quantity', bn: 'পরিমাণ' },
-  remove: { en: 'Remove', bn: 'সরান' },
-  payment_method: { en: 'Payment method', bn: 'পেমেন্ট পদ্ধতি' },
-  send_money_instructions: { en: 'Send money instructions', bn: 'টাকা পাঠানোর নির্দেশনা' },
-  transaction_id: { en: 'Transaction ID', bn: 'ট্রানজেকশন আইডি' },
-  pending: { en: 'Pending', bn: 'অপেক্ষমাণ' },
-  assigned: { en: 'Assigned', bn: 'বরাদ্দকৃত' },
-  picked_up: { en: 'Picked Up', bn: 'সংগৃহীত' },
-  in_transit: { en: 'In Transit', bn: 'পথে আছে' },
-  delivered: { en: 'Delivered', bn: 'ডেলিভারি সম্পন্ন' },
-  failed: { en: 'Failed', bn: 'ব্যর্থ' },
-  returned: { en: 'Returned', bn: 'ফেরত' },
+export const STRINGS: Record<StringKey, { ar: string; fr: string }> = {
+  add_to_cart: { ar: 'أضف إلى السلة', fr: 'Ajouter au panier' },
+  checkout: { ar: 'إتمام الطلب', fr: 'Commander' },
+  place_order: { ar: 'تأكيد الطلب', fr: 'Passer la commande' },
+  your_cart: { ar: 'سلتك', fr: 'Votre panier' },
+  cart_empty: { ar: 'سلتك فارغة', fr: 'Votre panier est vide' },
+  subtotal: { ar: 'المجموع الفرعي', fr: 'Sous-total' },
+  delivery_charge: { ar: 'رسوم التوصيل', fr: 'Frais de livraison' },
+  total: { ar: 'المجموع الكلي', fr: 'Total' },
+  advance_payable: { ar: 'الدفعة المقدمة', fr: 'Avance à payer' },
+  cash_on_delivery: { ar: 'الدفع عند الاستلام', fr: 'Paiement à la livraison' },
+  phone: { ar: 'رقم الهاتف', fr: 'Numéro de téléphone' },
+  name: { ar: 'الاسم', fr: 'Nom' },
+  address: { ar: 'العنوان', fr: 'Adresse' },
+  district: { ar: 'الولاية', fr: 'Wilaya' },
+  wilaya: { ar: 'الولاية', fr: 'Wilaya' },
+  track_order: { ar: 'تتبع الطلب', fr: 'Suivre la commande' },
+  order_placed: { ar: 'تم إرسال الطلب', fr: 'Commande passée' },
+  continue_shopping: { ar: 'متابعة التسوق', fr: 'Continuer les achats' },
+  search: { ar: 'بحث', fr: 'Rechercher' },
+  all_products: { ar: 'جميع المنتجات', fr: 'Tous les produits' },
+  out_of_stock: { ar: 'غير متوفر', fr: 'Rupture de stock' },
+  quantity: { ar: 'الكمية', fr: 'Quantité' },
+  remove: { ar: 'إزالة', fr: 'Retirer' },
+  payment_method: { ar: 'طريقة الدفع', fr: 'Mode de paiement' },
+  send_money_instructions: { ar: 'تعليمات تحويل المبلغ', fr: "Instructions pour l'envoi" },
+  transaction_id: { ar: 'مرجع التحويل', fr: 'Référence de virement' },
+  pending: { ar: 'قيد الانتظار', fr: 'En attente' },
+  assigned: { ar: 'تم التعيين', fr: 'Assignée' },
+  picked_up: { ar: 'تم الاستلام', fr: 'Ramassée' },
+  in_transit: { ar: 'في الطريق', fr: 'En transit' },
+  delivered: { ar: 'تم التوصيل', fr: 'Livrée' },
+  failed: { ar: 'فشلت', fr: 'Échec' },
+  returned: { ar: 'مرتجعة', fr: 'Retournée' },
 }
 
-export function t(key: StringKey, lang: Lang = 'en'): string {
-  return STRINGS[key]?.[lang] ?? STRINGS[key]?.en ?? key
+export function t(key: StringKey, lang: Lang = 'ar'): string {
+  return STRINGS[key]?.[lang] ?? STRINGS[key]?.ar ?? key
+}
+
+/** Text direction helper for the storefront root — Arabic is RTL, French is LTR. */
+export function langDir(lang: Lang): 'rtl' | 'ltr' {
+  return lang === 'ar' ? 'rtl' : 'ltr'
 }

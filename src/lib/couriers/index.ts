@@ -2,22 +2,26 @@ import type { DeliveryCourier } from '@/types/db'
 import { ConfigRequiredError } from './types'
 import type { CourierAdapter } from './types'
 import { manualAdapter } from './manual'
-import { steadfastAdapter } from './steadfast'
-import { pathaoAdapter } from './pathao'
+import { yalidineAdapter } from './yalidine'
+import { zrExpressAdapter } from './zr-express'
+import { noestExpressAdapter } from './noest-express'
+import { guepexAdapter } from './guepex'
 
 export * from './types'
 
 const ADAPTERS: Partial<Record<DeliveryCourier, CourierAdapter>> = {
   manual: manualAdapter,
-  steadfast: steadfastAdapter,
-  pathao: pathaoAdapter,
+  yalidine: yalidineAdapter,
+  zr_express: zrExpressAdapter,
+  noest_express: noestExpressAdapter,
+  guepex: guepexAdapter,
 }
 
 /**
- * docs/architecture.md §8 — getAdapter(courier). 'redx' has no adapter
- * implemented yet: it throws the same ConfigRequiredError shape as an
- * unconfigured steadfast/pathao account, so callers get one consistent
- * error-handling path (toast + suggest switching to manual).
+ * docs/architecture.md §8 — getAdapter(courier). Every DeliveryCourier value
+ * has an adapter today (all 4 real couriers ship guarded/stubbed, same as
+ * manual) — the fallback below only fires if a new courier value is added to
+ * the enum without a matching adapter.
  */
 export function getAdapter(courier: DeliveryCourier): CourierAdapter {
   const adapter = ADAPTERS[courier]

@@ -19,9 +19,9 @@ insert into public.orgs (
   'pro',
   array['catalog','orders','pos','customers','discounts','delivery','receipts',
         'cms','storefront','reports','expenses','reviews']::text[],
-  'BDT',
-  'BD',
-  'Asia/Dhaka',
+  'DZD',
+  'DZ',
+  'Africa/Algiers',
   true
 )
 on conflict (id) do update set
@@ -60,7 +60,7 @@ values
   ('00000000-0000-0000-0000-000000000001', 'payments.advance_required', 'true'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'payments.advance_amount',   '12000'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'storefront.announcement',
-     '"Free delivery inside Dhaka on orders over ৳2000"'::jsonb),
+     '"Free delivery inside Alger on orders over دج 2000"'::jsonb),
   ('00000000-0000-0000-0000-000000000001', 'storefront.whatsapp_number', '"+8801700000000"'::jsonb)
 on conflict (org_id, key) do update set
   value      = excluded.value,

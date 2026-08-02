@@ -402,35 +402,27 @@ export async function placeOrderAction(input: PlaceOrderInput): Promise<ActionRe
       advanceDue = Math.min(Math.max(advanceDue, 0), total)
     }
 
-    if (data.paymentMethod === 'cod' && !settingBool(settings, 'payments.cod_enabled')) {
+    if (!settingBool(settings, 'payments.cod_enabled')) {
       return { ok: false, error: 'Cash on delivery is not available for this store.' }
     }
-    if (data.paymentMethod === 'cod' && !zone.codAvailable) {
-      return { ok: false, error: 'Cash on delivery is not available for your district — choose bKash/Nagad instead.' }
-    }
-    if (data.paymentMethod !== 'cod' && !settingBool(settings, 'payments.manual_mfs.enabled')) {
-      return { ok: false, error: 'This payment method is not available for this store.' }
+    if (!zone.codAvailable) {
+      return { ok: false, error: 'Cash on delivery is not available for your wilaya.' }
     }
 
     let paymentRow: {
-      method: 'bkash' | 'nagad'
-      kind: 'advance' | 'full'
+      method: 'bank'
+      kind: 'advance'
       amount: number
       trxId: string
       senderNumber: string
     } | null = null
 
-    if (data.paymentMethod === 'bkash' || data.paymentMethod === 'nagad') {
+    if (advanceRequired) {
       if (!data.trxId || !data.senderNumber) {
-        return { ok: false, error: 'Enter the transaction ID and sender number for your payment.' }
-      }
-      paymentRow = { method: data.paymentMethod, kind: 'full', amount: total, trxId: data.trxId, senderNumber: data.senderNumber }
-    } else if (advanceRequired) {
-      if (!data.advanceMfsProvider || !data.trxId || !data.senderNumber) {
-        return { ok: false, error: 'Enter the advance payment details (provider, transaction ID, sender number).' }
+        return { ok: false, error: 'Enter the bank transfer reference and payer name for the advance payment.' }
       }
       paymentRow = {
-        method: data.advanceMfsProvider,
+        method: 'bank',
         kind: 'advance',
         amount: advanceDue,
         trxId: data.trxId,

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Noto_Sans_Bengali } from "next/font/google";
+import { Inter, Noto_Naskh_Arabic } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -9,10 +9,10 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-const notoSansBengali = Noto_Sans_Bengali({
-  subsets: ["bengali"],
+const notoNaskhArabic = Noto_Naskh_Arabic({
+  subsets: ["arabic"],
   display: "swap",
-  variable: "--font-bengali",
+  variable: "--font-arabic",
 });
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${notoSansBengali.variable} font-sans antialiased`}
+        className={`${inter.variable} ${notoNaskhArabic.variable} font-sans antialiased`}
       >
         {children}
         <Toaster richColors position="top-right" />

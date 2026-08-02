@@ -144,7 +144,7 @@ export function DiscountForm({ discount, categories, initialProducts = [] }: Dis
                 name="value"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{type === 'percent' ? 'Value (%)' : 'Value (৳)'}</FormLabel>
+                    <FormLabel>{type === 'percent' ? 'Value (%)' : 'Value (دج)'}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -226,7 +226,7 @@ export function DiscountForm({ discount, categories, initialProducts = [] }: Dis
               name="min_order"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Minimum order (৳)</FormLabel>
+                  <FormLabel>Minimum order (دج)</FormLabel>
                   <FormControl>
                     <Input type="number" min={0} step="0.01" {...field} />
                   </FormControl>

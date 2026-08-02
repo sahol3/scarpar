@@ -50,12 +50,12 @@ anything (confirmed: no `plan` reads outside display in `src/app/(admin)/admin/p
    shape of `requireModule()` (`src/lib/auth.ts` pattern) — `requirePlan(ctx, 'growth')` throws/redirects
    the same way `requireRole` does. Call it from the module-enable action (wherever an admin flips
    `enabled_modules` — currently unrestricted) and from onboarding's vertical picker.
-3. **[M] Billing = manual/bKash first.** BD reality check: Stripe is not the first move. Cheapest path
-   that reuses existing machinery — model a platform subscription charge as an `order` against a
-   platform-owned org (reuses `orders`, `payments`, `verifyPayment()` chokepoint in
-   `src/modules/orders/actions.ts` — the same manual-MFS-verify flow customers already use), OR a
-   dedicated `platform_invoices` table if overloading `orders` proves awkward. Either way: manual bKash/
-   Nagad verify by a platform admin is the v1 collection mechanism. Stripe/intl is Phase A follow-up, not
+3. **[M] Billing = manual bank transfer first.** Stripe is not the first move for an Algeria-first
+   platform. Cheapest path that reuses existing machinery — model a platform subscription charge as an
+   `order` against a platform-owned org (reuses `orders`, `payments`, `verifyPayment()` chokepoint in
+   `src/modules/orders/actions.ts` — the same manual bank-transfer-verify flow customers already use), OR a
+   dedicated `platform_invoices` table if overloading `orders` proves awkward. Either way: manual bank
+   transfer verify by a platform admin is the v1 collection mechanism. Stripe/intl is Phase A follow-up, not
    day one.
 4. **[S] Subscription state on `orgs`.** Extend `orgs` (migration 0005): `subscription_status`
    (`trialing|active|past_due|suspended`), `current_period_end`, `plan_key` (replaces the free-text
@@ -150,13 +150,14 @@ not built)" — this phase executes that sketch.
 oversight — this phase is where that debt gets paid, timed to when it starts mattering (see ordering
 rationale above).
 
-20. **[M] Webhook hardening + chokepoint wiring.** Both routes EXIST as guarded stubs
-    (`src/app/api/webhooks/uddoktapay/route.ts` — verifies the `RT-UDDOKTAPAY-API-KEY` header
-    against org settings, then logs-and-200s; `src/app/api/webhooks/courier/route.ts` — appends a
-    `delivery_events` note but deliberately never mutates status). This item is the hardening pass:
-    wire the UddoktaPay route to `verifyPaymentAction` (the chokepoint — TODO'd inline), add
-    per-courier signature/HMAC verification before the courier route is allowed to change
-    `deliveries.status`, and add replay-attack + idempotency guards. Overlaps next-steps item 3.4.
+20. **[M] Webhook hardening + chokepoint wiring.** The courier webhook route EXISTS as a guarded stub
+    (`src/app/api/webhooks/courier/route.ts` — appends a `delivery_events` note but deliberately never
+    mutates status). There is no payment webhook in v1 (payments are COD-only, no online gateway — the
+    former UddoktaPay webhook route was removed). This item is the hardening pass for the courier route:
+    add per-courier signature/HMAC verification before it's allowed to change `deliveries.status`, and
+    add replay-attack + idempotency guards. If/when a payment gateway is added (see item 3), it must wire
+    its webhook to `verifyPaymentAction` (the chokepoint) from day one — never bypass it. Overlaps next-steps
+    item 3.4.
 21. **[M] 2FA for owner role.** Supabase Auth supports TOTP MFA natively — enable it in Auth settings,
     add an enrollment flow gated to `role='owner'` in `/admin/settings` (or a new `/admin/security`
     page), enforce via a `requireMfa()` check alongside the existing `requireRole()` pattern.

@@ -32,7 +32,7 @@ export function AnnouncementBar({ text }: { text: string }) {
 
   return (
     <div className="relative flex items-center justify-center bg-primary px-10 py-2 text-center text-xs font-medium text-primary-foreground">
-      <span className="text-bengali">{text}</span>
+      <span className="font-arabic">{text}</span>
       <button
         type="button"
         aria-label="Dismiss announcement"

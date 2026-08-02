@@ -18,7 +18,7 @@ export interface ProductCardData
 export function ProductCard({
   orgSlug,
   product,
-  lang = 'en',
+  lang = 'ar',
 }: {
   orgSlug: string
   product: ProductCardData

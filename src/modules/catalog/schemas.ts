@@ -7,7 +7,7 @@
 import { z } from 'zod'
 
 // Unicode-aware slug — mirrors src/lib/utils.ts slugify() output (letters/
-// digits/hyphens; Bengali-safe).
+// digits/hyphens; Arabic/French-safe).
 const SLUG_RE = /^[\p{L}\p{N}]+(?:-[\p{L}\p{N}]+)*$/u
 const MONEY_RE = /^\d+(\.\d{1,2})?$/
 const INT_RE = /^\d+$/

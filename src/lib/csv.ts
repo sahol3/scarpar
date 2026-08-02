@@ -28,7 +28,7 @@ export function toCsv(rows: Record<string, unknown>[], columns?: CsvColumn[]): s
 // visible/greppable in source instead of an invisible byte.
 const UTF8_BOM = '\uFEFF'
 
-/** BOM-prefixed so Excel renders Bengali headers/content correctly. */
+/** BOM-prefixed so Excel renders Arabic/French headers and content correctly. */
 export function csvResponse(filename: string, csv: string): Response {
   return new Response(UTF8_BOM + csv, {
     headers: {

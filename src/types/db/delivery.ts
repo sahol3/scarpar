@@ -1,5 +1,6 @@
 // src/types/db/delivery.ts
-// Delivery, rider, courier, and COD types — mirrors supabase/migrations/0003_delivery_cms_ops.sql.
+// Delivery, rider, courier, and COD types — mirrors supabase/migrations/0003_delivery_cms_ops.sql
+// and supabase/migrations/0006_courier_wilaya_rates.sql.
 // Money columns are bigint paisa in the DB, mapped to TS `number` per docs/conventions.md.
 
 export interface DeliveryZone {
@@ -16,6 +17,23 @@ export interface DeliveryZone {
   created_at: string
 }
 
+export type DeliveryPricingType = 'home' | 'stopdesk'
+
+/** Per-courier, per-wilaya flat rate — supabase/migrations/0006_courier_wilaya_rates.sql. */
+export interface CourierWilayaRate {
+  id: string
+  org_id: string
+  courier: DeliveryCourier
+  wilaya_code: string
+  wilaya_name: string
+  delivery_type: DeliveryPricingType
+  price: number
+  return_price: number
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
 export interface Rider {
   id: string
   org_id: string
@@ -29,7 +47,7 @@ export interface Rider {
 }
 
 export type DeliveryMethod = 'rider' | 'courier' | 'pickup'
-export type DeliveryCourier = 'steadfast' | 'pathao' | 'redx' | 'manual'
+export type DeliveryCourier = 'yalidine' | 'zr_express' | 'noest_express' | 'guepex' | 'manual'
 export type DeliveryStatus =
   | 'pending'
   | 'assigned'
